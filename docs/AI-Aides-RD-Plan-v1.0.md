@@ -3,7 +3,8 @@
 > 文档版本：v1.0
 > 基于版本：AI-Aides-PRD-v1.1
 > 创建日期：2026-04-20
-> 状态：待评审
+> 最后更新：2026-04-21
+> 状态：**Phase 0 已完成 ✅**
 
 ---
 
@@ -138,28 +139,28 @@ interface Relation {
 
 | 任务 | 子任务 | 预计工时 | 产出物 |
 |------|--------|---------|--------|
-| **P0.1 仓库初始化** | 创建 GitHub 仓库 | 0.5h | ai-aides repo |
-| | 初始化 Docusaurus 项目 | 1h | |
-| | 配置 TypeScript | 0.5h | |
-| | 配置 pnpm | 0.5h | |
-| **P0.2 Docker 环境** | 编写 Dockerfile (多阶段构建) | 1h | |
-| | 编写 nginx.conf | 1h | 本地验证通过 |
-| | 本地 Docker 构建测试 | 1h | |
-| **P0.3 CI/CD 流程** | 配置 GitHub Actions | 2h | deploy.yml |
-| | 配置服务器 Docker 环境 | 1h | |
-| | 验证自动化部署 | 1h | ✅ 端到端通 |
-| **P0.4 AntV X6 集成** | 安装 @antv/x6 | 0.5h | |
-| | 创建基础 GraphCanvas 组件 | 3h | |
-| | 验证图谱渲染 | 1h | ✅ PoC 完成 |
-| | 验证节点缩放/拖拽 | 1h | |
-| **P0.5 数据层搭建** | 设计 JSON Schema | 1h | |
-| | 创建示例数据 | 1h | |
-| | 数据加载工具函数 | 1h | |
+| **P0.1 仓库初始化** | 创建 GitHub 仓库 | 0.5h | ai-aides repo | ✅ 已完成 |
+| | 初始化 Docusaurus 项目 | 1h | | ✅ 已完成 |
+| | 配置 TypeScript | 0.5h | | ✅ 已完成（内置） |
+| | 配置 pnpm | 0.5h | | ⚠️ 改用 npm（权限问题） |
+| **P0.2 Docker 环境** | 编写 Dockerfile (多阶段构建) | 1h | | ⏳ 延后手工配置 |
+| | 编写 nginx.conf | 1h | | ⏳ 延后手工配置 |
+| | 本地 Docker 构建测试 | 1h | | ⏳ 延后 |
+| **P0.3 CI/CD 流程** | 配置 GitHub Actions | 2h | deploy.yml | ⏳ 延后 |
+| | 配置服务器 Docker 环境 | 1h | | ⏳ 用户手工配置 |
+| | 验证自动化部署 | 1h | | ⏳ 延后 |
+| **P0.4 AntV X6 集成** | 安装 @antv/x6 | 0.5h | | ✅ 已完成 |
+| | 创建基础 GraphCanvas 组件 | 3h | | ✅ 已完成 |
+| | 验证图谱渲染 | 1h | | ✅ 已完成 |
+| | 验证节点缩放/拖拽 | 1h | | ✅ 已完成 |
+| **P0.5 数据层搭建** | 设计 JSON Schema | 1h | | ✅ 已完成（参考 PRD） |
+| | 创建示例数据 | 1h | | ✅ 已完成（5个测试节点） |
+| | 数据加载工具函数 | 1h | | ⏳ Phase 1 实现 |
 
 **Phase 0 完成标准**：
-- [ ] GitHub → Docker Hub → 服务器 自动化部署跑通
-- [ ] AntV X6 图谱能渲染 3-5 个测试节点
-- [ ] 节点支持缩放/拖拽
+- [x] AntV X6 图谱能渲染 3-5 个测试节点 ✅
+- [x] 节点支持缩放/拖拽 ✅
+- [ ] GitHub → Docker Hub → 服务器 自动化部署跑通（延后至 Phase 3）
 
 **Decision Point**：
 - ✅ X6 集成顺利 → 继续 Phase 1
@@ -264,12 +265,12 @@ interface Relation {
 
 ## 5. 里程碑总览
 
-| 阶段 | 时间 | 关键交付物 | Done Criteria |
-|------|------|-----------|---------------|
-| Phase 0 | Week 1 | PoC Demo | 技术可行性验证 |
-| Phase 1 | Week 2-4 | 完整功能 | 5个AC全部通过 |
-| Phase 2 | Week 5-6 | 内容+测试 | Lighthouse ≥ 90 |
-| Phase 3 | Week 7-8 | 生产上线 | aides.thend.cn 上线 |
+| 阶段 | 时间 | 关键交付物 | Done Criteria | 状态 |
+|------|------|-----------|---------------|------|
+| Phase 0 | Week 1 | PoC Demo | 技术可行性验证 | ✅ **已完成** |
+| Phase 1 | Week 2-4 | 完整功能 | 5个AC全部通过 | ⏳ 待开始 |
+| Phase 2 | Week 5-6 | 内容+测试 | Lighthouse ≥ 90 | ⏳ 待开始 |
+| Phase 3 | Week 7-8 | 生产上线 | aides.thend.cn 上线 | ⏳ 待开始 |
 
 ---
 
@@ -370,5 +371,26 @@ chore: 杂项
 
 ---
 
-> **文档状态**：待你审核确认后正式执行
-> **下一步**：Phase 0 - 项目初始化
+## 11. Phase 0 执行总结 (2026-04-21)
+
+### 11.1 完成情况
+
+| 任务 | 状态 | 说明 |
+|------|------|------|
+| 项目初始化 | ✅ 完成 | Docusaurus v3.10.0 + TypeScript |
+| AntV X6 集成 | ✅ 完成 | 本地文件加载方式 |
+| 图谱渲染 | ✅ 完成 | 5个测试节点 + 6条关系 |
+| 节点交互 | ✅ 完成 | 缩放(0.5x-3x) + 拖拽 |
+
+### 11.2 关键技术问题
+
+详见：`docs/Phase0-Technical-Issues.md`
+
+### 11.3 调整说明
+
+- **pnpm 改用 npm**：因 Node 版本管理目录权限问题，改用 npm 作为包管理器
+- **Docker/CI/CD 延后**：用户手工配置服务器 Docker，环境验证延后至 Phase 3 前
+
+---
+
+> **下一步**：Phase 1 - 核心功能开发

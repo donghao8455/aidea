@@ -1,43 +1,20 @@
 import type {ReactNode} from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import Heading from '@theme/Heading';
-
-import styles from './index.module.css';
-
-function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
-  return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Heading as="h1" className="hero__title">
-          {siteConfig.title}
-        </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
+import {GraphCanvas} from '@site/src/components/Graph';
 
 export default function Home(): ReactNode {
-  const {siteConfig} = useDocusaurusContext();
   return (
-    <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
+    <Layout title="AI概念图谱" description="可视化AI概念关系图谱">
+      <main style={{padding: '2rem 0'}}>
+        <div style={{maxWidth: '1400px', margin: '0 auto', padding: '0 2rem'}}>
+          <div style={{textAlign: 'center', marginBottom: '2rem'}}>
+            <h1 style={{fontSize: '2.5rem', marginBottom: '1rem'}}>🤖 AI概念关系图谱</h1>
+            <p style={{fontSize: '1.2rem', color: '#64748b'}}>
+              探索AI核心概念及其关系，鼠标滚轮缩放，拖拽移动视图
+            </p>
+          </div>
+          <GraphCanvas />
+        </div>
       </main>
     </Layout>
   );
