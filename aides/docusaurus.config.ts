@@ -8,10 +8,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   scripts: [
-    {
-      src: '/x6.min.js',
-      position: 'head',
-    },
+    '/x6.min.js',
   ],
 
   future: {
