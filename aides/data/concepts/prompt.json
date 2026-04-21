@@ -1,0 +1,84 @@
+{
+  "id": "prompt",
+  "name": "提示词",
+  "nameEn": "Prompt",
+  "abbreviation": "Prompt",
+  "category": "basic",
+  "difficulty": 1,
+  "tags": ["basic", "interaction"],
+  "level": 2,
+  "tooltip": {
+    "summary": "与AI模型交互时输入的文本指令，决定AI输出的质量和方向"
+  },
+  "detail": {
+    "definition": "提示词(Prompt)是用户向AI模型输入的文本指令或问题，用于引导模型生成特定的输出。它是人类与AI沟通的主要方式，提示词的质量和设计直接影响AI回答的准确性、相关性和有用性。一个好的提示词应该清晰、具体、包含足够的上下文信息。",
+    "plainExplanation": "提示词就像你给AI的"任务说明书"。就像你请朋友帮忙时会说清楚要做什么、怎么做、有什么要求一样，提示词就是你告诉AI："请帮我做这件事，按照这种方式，注意这些要点"。",
+    "analogy": "提示词就像餐厅的点餐单。如果你只说"我要吃的"，服务员可能不知道你想要什么。但如果你说"我要一份少辣、不要香菜的宫保鸡丁"，服务员就能准确满足你的需求。提示词越具体，AI越能给出你想要的结果。",
+    "keyPoints": [
+      "提示词质量直接决定AI输出质量",
+      "好的提示词应包含：任务、背景、格式、约束条件",
+      "可以通过示例(Few-shot)引导AI理解任务模式",
+      "角色设定(如"你是一位专家")能提升回答专业性",
+      "迭代优化提示词是获得最佳效果的常用方法"
+    ],
+    "useCases": [
+      {
+        "title": "文案创作",
+        "description": "通过详细提示词指导AI生成符合品牌调性的营销文案",
+        "example": "提示词："你是一位资深文案，为25-35岁都市女性撰写一款护肤品的推广文案，风格轻松活泼，突出天然成分，200字左右""
+      },
+      {
+        "title": "代码生成",
+        "description": "明确指定编程语言、功能需求和代码规范",
+        "example": "提示词："用Python写一个函数，接收一个列表，返回去重后的列表，保持原有顺序，添加类型注解和文档字符串""
+      },
+      {
+        "title": "数据分析",
+        "description": "提供数据格式、分析目标和输出要求",
+        "example": "提示词："分析以下销售数据，找出增长最快的产品类别，用表格形式展示，并给出3条业务建议""
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "llm",
+        "relationType": "used-by",
+        "relationLabel": "被使用"
+      },
+      {
+        "conceptId": "prompt-engineering",
+        "relationType": "optimized-by",
+        "relationLabel": "被优化"
+      },
+      {
+        "conceptId": "chain-of-thought",
+        "relationType": "related",
+        "relationLabel": "相关"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Prompt Engineering Guide",
+        "url": "https://www.promptingguide.ai/",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      },
+      {
+        "title": "ChatGPT提示词技巧",
+        "url": "https://platform.openai.com/docs/guides/prompt-engineering",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

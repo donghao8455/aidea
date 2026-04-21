@@ -1,0 +1,154 @@
+{
+  "concepts": [
+    {
+      "id": "llm",
+      "name": "大语言模型",
+      "nameEn": "Large Language Model",
+      "abbreviation": "LLM",
+      "category": "basic",
+      "difficulty": 2,
+      "level": 0,
+      "summary": "能理解和生成人类语言的大型神经网络模型，是当代AI的核心技术"
+    },
+    {
+      "id": "prompt",
+      "name": "提示词",
+      "nameEn": "Prompt",
+      "abbreviation": "Prompt",
+      "category": "basic",
+      "difficulty": 1,
+      "level": 2,
+      "summary": "与AI模型交互时输入的文本指令，决定AI输出的质量和方向"
+    },
+    {
+      "id": "tokenizer",
+      "name": "分词器",
+      "nameEn": "Tokenizer",
+      "abbreviation": "Tokenizer",
+      "category": "basic",
+      "difficulty": 2,
+      "level": 1,
+      "summary": "将文本分割成模型可处理的token的工具，是文本进入AI模型的第一步"
+    },
+    {
+      "id": "temperature",
+      "name": "温度参数",
+      "nameEn": "Temperature",
+      "abbreviation": "Temperature",
+      "category": "basic",
+      "difficulty": 2,
+      "level": 1,
+      "summary": "控制模型输出随机性的参数，高温更创意，低温更确定"
+    },
+    {
+      "id": "embedding",
+      "name": "向量嵌入",
+      "nameEn": "Embedding",
+      "abbreviation": "Embedding",
+      "category": "tech",
+      "difficulty": 3,
+      "level": 2,
+      "summary": "将文本转换为高维向量表示的技术，让AI能计算语义相似度"
+    },
+    {
+      "id": "vector-db",
+      "name": "向量数据库",
+      "nameEn": "Vector Database",
+      "abbreviation": "Vector DB",
+      "category": "tech",
+      "difficulty": 3,
+      "level": 2,
+      "summary": "专门存储和高效检索向量数据的数据库，支持语义相似度搜索"
+    },
+    {
+      "id": "fine-tuning",
+      "name": "微调",
+      "nameEn": "Fine-tuning",
+      "abbreviation": "Fine-tuning",
+      "category": "tech",
+      "difficulty": 3,
+      "level": 1,
+      "summary": "在预训练模型基础上，用特定数据进一步训练以提升特定任务表现"
+    },
+    {
+      "id": "prompt-engineering",
+      "name": "提示词工程",
+      "nameEn": "Prompt Engineering",
+      "abbreviation": "PE",
+      "category": "methodology",
+      "difficulty": 2,
+      "level": 1,
+      "summary": "设计和优化提示词以获得更好AI输出的方法论和技巧集合"
+    },
+    {
+      "id": "chain-of-thought",
+      "name": "思维链",
+      "nameEn": "Chain of Thought",
+      "abbreviation": "CoT",
+      "category": "methodology",
+      "difficulty": 2,
+      "level": 1,
+      "summary": "引导AI逐步推理、展示思考过程的方法，提升复杂问题解决能力"
+    },
+    {
+      "id": "rag",
+      "name": "检索增强生成",
+      "nameEn": "Retrieval-Augmented Generation",
+      "abbreviation": "RAG",
+      "category": "architecture",
+      "difficulty": 4,
+      "level": 1,
+      "summary": "结合外部知识库检索和LLM生成的架构，解决模型知识局限和幻觉问题"
+    },
+    {
+      "id": "agent",
+      "name": "智能体",
+      "nameEn": "AI Agent",
+      "abbreviation": "Agent",
+      "category": "architecture",
+      "difficulty": 4,
+      "level": 1,
+      "summary": "能够自主决策、规划并执行任务的AI系统，具备工具使用和反思能力"
+    },
+    {
+      "id": "ai-gateway",
+      "name": "AI网关",
+      "nameEn": "AI Gateway",
+      "abbreviation": "AI Gateway",
+      "category": "architecture",
+      "difficulty": 3,
+      "level": 1,
+      "summary": "管理AI模型调用的中间层服务，提供统一接口、负载均衡和安全管控"
+    },
+    {
+      "id": "mcp",
+      "name": "模型上下文协议",
+      "nameEn": "Model Context Protocol",
+      "abbreviation": "MCP",
+      "category": "tool",
+      "difficulty": 4,
+      "level": 1,
+      "summary": "AI模型与外部工具和数据源交互的标准协议，由Anthropic提出"
+    },
+    {
+      "id": "tool-calling",
+      "name": "工具调用",
+      "nameEn": "Tool Calling",
+      "abbreviation": "Tool Calling",
+      "category": "tool",
+      "difficulty": 3,
+      "level": 2,
+      "summary": "让AI能够识别需要并调用外部函数/工具来完成任务的能力"
+    },
+    {
+      "id": "multi-agent",
+      "name": "多智能体",
+      "nameEn": "Multi-Agent",
+      "abbreviation": "Multi-Agent",
+      "category": "tool",
+      "difficulty": 5,
+      "level": 2,
+      "summary": "多个AI智能体协作解决问题的架构，模拟团队分工合作"
+    }
+  ]
+}

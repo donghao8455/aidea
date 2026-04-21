@@ -1,0 +1,158 @@
+{
+  "relations": [
+    {
+      "id": "rel-001",
+      "source": "llm",
+      "target": "prompt",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-002",
+      "source": "llm",
+      "target": "prompt-engineering",
+      "type": "related",
+      "label": "相关"
+    },
+    {
+      "id": "rel-003",
+      "source": "llm",
+      "target": "chain-of-thought",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-004",
+      "source": "llm",
+      "target": "rag",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-005",
+      "source": "llm",
+      "target": "agent",
+      "type": "powers",
+      "label": "驱动"
+    },
+    {
+      "id": "rel-006",
+      "source": "llm",
+      "target": "fine-tuning",
+      "type": "improved-by",
+      "label": "可被改进"
+    },
+    {
+      "id": "rel-007",
+      "source": "llm",
+      "target": "ai-gateway",
+      "type": "routes-to",
+      "label": "路由到"
+    },
+    {
+      "id": "rel-008",
+      "source": "llm",
+      "target": "mcp",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-009",
+      "source": "llm",
+      "target": "temperature",
+      "type": "configured-by",
+      "label": "配置"
+    },
+    {
+      "id": "rel-010",
+      "source": "llm",
+      "target": "tokenizer",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-011",
+      "source": "prompt-engineering",
+      "target": "prompt",
+      "type": "optimizes",
+      "label": "优化"
+    },
+    {
+      "id": "rel-012",
+      "source": "prompt-engineering",
+      "target": "chain-of-thought",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-013",
+      "source": "rag",
+      "target": "embedding",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-014",
+      "source": "rag",
+      "target": "vector-db",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-015",
+      "source": "rag",
+      "target": "agent",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-016",
+      "source": "agent",
+      "target": "tool-calling",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-017",
+      "source": "agent",
+      "target": "rag",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-018",
+      "source": "agent",
+      "target": "multi-agent",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-019",
+      "source": "embedding",
+      "target": "vector-db",
+      "type": "stored-in",
+      "label": "存储于"
+    },
+    {
+      "id": "rel-020",
+      "source": "mcp",
+      "target": "tool-calling",
+      "type": "standardizes",
+      "label": "标准化"
+    },
+    {
+      "id": "rel-021",
+      "source": "mcp",
+      "target": "agent",
+      "type": "empowers",
+      "label": "赋能"
+    },
+    {
+      "id": "rel-022",
+      "source": "ai-gateway",
+      "target": "agent",
+      "type": "used-by",
+      "label": "被使用"
+    }
+  ]
+}

@@ -17,7 +17,7 @@ export default function Home(): ReactNode {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleNodeClick = (conceptId: string) => {
-    window.location.href = `/concepts/${conceptId}`;
+    window.location.href = `/concept?id=${conceptId}`;
   };
 
   return (

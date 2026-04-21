@@ -1,0 +1,84 @@
+{
+  "id": "chain-of-thought",
+  "name": "思维链",
+  "nameEn": "Chain of Thought",
+  "abbreviation": "CoT",
+  "category": "methodology",
+  "difficulty": 2,
+  "tags": ["methodology", "reasoning"],
+  "level": 1,
+  "tooltip": {
+    "summary": "引导AI逐步推理、展示思考过程的方法，提升复杂问题解决能力"
+  },
+  "detail": {
+    "definition": "思维链(Chain of Thought, CoT)是一种提示词技术，通过引导大语言模型逐步展示推理过程来解决复杂问题。不同于直接给出答案，CoT要求模型像人类一样"思考 aloud"，将问题分解为多个步骤，逐步推导最终答案。这种方法显著提升了模型在数学、逻辑推理、常识推理等复杂任务上的表现。",
+    "plainExplanation": "思维链就像让AI"说出它的思考过程"。比如解数学题时，不是直接给答案，而是展示"第一步...第二步...第三步...所以答案是"。这样AI不容易出错，你也能理解它是怎么得出结论的。",
+    "analogy": "就像解几何证明题时，老师要求你写出每一步的推理依据，不能跳步。思维链就是让AI也"写出每一步"，这样既能减少错误，也便于检查哪里出了问题。",
+    "keyPoints": [
+      "通过"让我们一步步思考"等提示触发逐步推理",
+      "适用于数学、逻辑、常识推理等复杂任务",
+      "可结合Few-shot示例展示推理格式",
+      "Self-Consistency: 多次采样选择最一致的答案",
+      "Tree of Thoughts: 探索多个推理路径"
+    ],
+    "useCases": [
+      {
+        "title": "数学问题求解",
+        "description": "引导AI展示计算步骤，提高准确率",
+        "example": "解方程时，AI展示"移项→合并同类项→求解→验证"的完整过程"
+      },
+      {
+        "title": "逻辑推理",
+        "description": "分析复杂逻辑问题，逐步推导结论",
+        "example": "侦探推理题：AI逐步分析线索、排除嫌疑人、得出结论"
+      },
+      {
+        "title": "决策分析",
+        "description": "列出利弊、权衡因素，做出理性决策",
+        "example": "职业选择分析：AI逐步比较薪资、发展、兴趣等因素"
+      },
+      {
+        "title": "代码调试",
+        "description": "逐步分析代码执行流程，定位Bug",
+        "example": "AI逐行分析代码，追踪变量变化，找出逻辑错误"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "prompt-engineering",
+        "relationType": "component-of",
+        "relationLabel": "组成部分"
+      },
+      {
+        "conceptId": "llm",
+        "relationType": "used-with",
+        "relationLabel": "配合使用"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Chain-of-Thought Prompting Elicits Reasoning in LLMs",
+        "url": "https://arxiv.org/abs/2201.11903",
+        "type": "paper",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      },
+      {
+        "title": "Tree of Thoughts: Deliberate Problem Solving",
+        "url": "https://arxiv.org/abs/2305.10601",
+        "type": "paper",
+        "language": "en",
+        "difficulty": "advanced",
+        "recommended": false
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

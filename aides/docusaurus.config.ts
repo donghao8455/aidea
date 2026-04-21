@@ -22,6 +22,7 @@ const config: Config = {
   projectName: 'aidea',
 
   onBrokenLinks: 'throw',
+  trailingSlash: false,
 
   i18n: {
     defaultLocale: 'zh-Hans',
@@ -42,6 +43,8 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
+
+
 
   themeConfig: {
     image: 'img/docusaurus-social-card.jpg',

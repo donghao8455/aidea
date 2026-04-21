@@ -1,0 +1,107 @@
+{
+  "id": "llm",
+  "name": "大语言模型",
+  "nameEn": "Large Language Model",
+  "abbreviation": "LLM",
+  "category": "basic",
+  "difficulty": 2,
+  "tags": ["ai", "nlp", "foundation"],
+  "level": 0,
+  "tooltip": {
+    "summary": "能理解和生成人类语言的大型神经网络模型，是当代AI的核心技术"
+  },
+  "detail": {
+    "definition": "大语言模型(Large Language Model, LLM)是指通过海量文本数据训练而成的大型神经网络模型，具有理解和生成自然语言的能力。这类模型通常包含数十亿到数千亿个参数，能够执行文本生成、翻译、摘要、问答等多种任务。代表模型包括GPT-4、Claude、文心一言、通义千问等。",
+    "plainExplanation": "想象LLM是一个读过互联网上几乎所有书籍、文章和对话的超级读者。它通过学习这些文本中的模式和规律，学会了如何像人类一样理解和使用语言。当你问它问题时，它会根据学到的知识来生成回答。",
+    "analogy": "就像一位博览群书的智者，LLM读过无数书籍和文章，积累了丰富的知识。当你向它请教时，它能基于所学给出有见地的回答，就像一位随时待命的私人导师。",
+    "keyPoints": [
+      "基于Transformer架构，通过自注意力机制理解上下文关系",
+      "参数量巨大(数十亿到数千亿)，需要大量计算资源训练",
+      "通过预测下一个词的方式学习语言规律",
+      "具备涌现能力，能完成训练时未明确教授的任务",
+      "可通过提示词(Prompt)引导完成特定任务"
+    ],
+    "useCases": [
+      {
+        "title": "智能客服",
+        "description": "自动回答用户咨询，处理常见问题，提升服务效率",
+        "example": "某电商平台使用LLM处理80%的售前咨询，响应时间从分钟级降至秒级"
+      },
+      {
+        "title": "内容创作",
+        "description": "辅助写作、生成营销文案、撰写邮件和报告",
+        "example": "自媒体创作者使用LLM生成文章大纲和初稿，创作效率提升3倍"
+      },
+      {
+        "title": "代码辅助",
+        "description": "代码补全、Bug修复、代码解释和技术文档生成",
+        "example": "GitHub Copilot帮助开发者自动完成30%的代码编写"
+      },
+      {
+        "title": "教育辅导",
+        "description": "个性化答疑、作业批改、知识点讲解",
+        "example": "在线教育平台使用LLM为学生提供24小时答疑服务"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "prompt",
+        "relationType": "uses",
+        "relationLabel": "使用"
+      },
+      {
+        "conceptId": "prompt-engineering",
+        "relationType": "related",
+        "relationLabel": "相关"
+      },
+      {
+        "conceptId": "rag",
+        "relationType": "extends",
+        "relationLabel": "扩展"
+      },
+      {
+        "conceptId": "agent",
+        "relationType": "powers",
+        "relationLabel": "驱动"
+      },
+      {
+        "conceptId": "fine-tuning",
+        "relationType": "improved-by",
+        "relationLabel": "可被改进"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Attention Is All You Need (Transformer论文)",
+        "url": "https://arxiv.org/abs/1706.03762",
+        "type": "paper",
+        "language": "en",
+        "difficulty": "advanced",
+        "recommended": true
+      },
+      {
+        "title": "GPT-4技术报告",
+        "url": "https://arxiv.org/abs/2303.08774",
+        "type": "paper",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      },
+      {
+        "title": "大语言模型入门指南",
+        "url": "https://www.bilibili.com/video/BV1...",
+        "type": "video",
+        "language": "zh",
+        "difficulty": "beginner",
+        "recommended": false
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}
