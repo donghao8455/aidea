@@ -1,0 +1,94 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: aides/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./aides
+        run: npm ci
+
+      - name: Build site
+        working-directory: ./aides
+        run: npm run build
+
+      - name: Build Docker image
+        run: |
+          docker build -t aides:${{ github.sha }} -f docker/Dockerfile .
+          docker tag aides:${{ github.sha }} aides:latest
+
+      - name: Save Docker image
+        run: |
+          docker save aides:latest | gzip > aides-image.tar.gz
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            # Stop existing container
+            docker stop aides || true
+            docker rm aides || true
+
+            # Copy image
+            echo "${{ secrets.DOCKER_IMAGE }}" | base64 -d > aides-image.tar.gz
+            docker load < aides-image.tar.gz
+
+            # Run container
+            docker run -d \
+              --name aides \
+              --restart unless-stopped \
+              -p 80:80 \
+              aides:latest
+
+            # Cleanup
+            rm aides-image.tar.gz
+            docker image prune -f
+
+            echo "Deployment completed successfully!"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: aides/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./aides
+        run: npm ci
+
+      - name: Check TypeScript
+        working-directory: ./aides
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        working-directory: ./aides
+        run: npm run lint || true

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  aides:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Local development with hot reload
+  aides-dev:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ../aides:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: npm start
+    environment:
+      - NODE_ENV=development

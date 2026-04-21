@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Build output
+build
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+docker/Dockerfile
+docker/*.dockerfile
+
+# Documentation
+*.md
+!README.md
+
+# CI/CD
+.github
+.travis.yml
+.gitlab-ci.yml
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+
+# Test
+coverage
+.nyc_output
