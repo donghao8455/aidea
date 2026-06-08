@@ -1,5 +1,6 @@
 import type {ReactNode} from 'react';
-import {useState} from 'react';
+import {useState, useEffect, useCallback, useRef} from 'react';
+import {useHistory} from '@docusaurus/router';
 import Layout from '@theme/Layout';
 import {GraphCanvas} from '@site/src/components/Graph';
 import styles from './index.module.css';
@@ -15,10 +16,34 @@ const categories = [
 export default function Home(): ReactNode {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const history = useHistory();
 
-  const handleNodeClick = (conceptId: string) => {
-    window.location.href = `/concept?id=${conceptId}`;
-  };
+  // SPA 路由跳转（无白屏刷新）
+  const handleNodeClick = useCallback((conceptId: string) => {
+    history.push(`/concept?id=${conceptId}`);
+  }, [history]);
+
+  // 搜索防抖：200ms，避免每次按键都触发图谱样式更新
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Ctrl+K 快捷键聚焦搜索框
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <Layout title="AI概念图谱" description="可视化AI概念关系图谱">
@@ -34,6 +59,7 @@ export default function Home(): ReactNode {
           <div className={styles.filterGroup}>
             <div className={styles.searchBox}>
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="搜索概念... (Ctrl+K)"
                 value={searchQuery}
@@ -76,7 +102,7 @@ export default function Home(): ReactNode {
         <GraphCanvas
           onNodeClick={handleNodeClick}
           selectedCategory={selectedCategory}
-          searchQuery={searchQuery}
+          searchQuery={debouncedQuery}
         />
       </main>
     </Layout>

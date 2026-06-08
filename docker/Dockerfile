@@ -24,9 +24,6 @@ COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built static files
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Copy x6 library (for graph rendering)
-COPY aides/static/x6.min.js /usr/share/nginx/html/x6.min.js
-
 # Expose port 80
 EXPOSE 80
 

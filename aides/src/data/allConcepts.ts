@@ -1,3 +1,16 @@
+/**
+ * AI-Aides 单一数据源 (Single Source of Truth)
+ *
+ * 所有概念详情、图谱简化数据、关系数据均由此文件统一管理。
+ * 其他组件应从此文件导入，不要在别处硬编码概念数据。
+ */
+
+import type {ConceptData, RelationData} from '@site/src/components/Graph/types';
+
+/* ============================================================
+ * 完整概念数据类型（详情页使用）
+ * ============================================================ */
+
 export interface ConceptDetail {
   id: string;
   name: string;
@@ -25,7 +38,11 @@ export interface ConceptDetail {
   };
 }
 
-export const allConcepts: Record<string, ConceptDetail> = {
+/* ============================================================
+ * 概念详情数据（15 个概念的完整内容）
+ * ============================================================ */
+
+const conceptMap: Record<string, ConceptDetail> = {
   llm: {
     id: 'llm',
     name: '大语言模型',
@@ -543,10 +560,98 @@ export const allConcepts: Record<string, ConceptDetail> = {
   },
 };
 
+/* ============================================================
+ * 概念排列顺序（用于详情页的上一个/下一个导航）
+ * ============================================================ */
+
 export const conceptOrder = [
-  'llm', 'prompt', 'tokenizer', 'temperature', 
-  'embedding', 'vector-db', 'fine-tuning', 
-  'prompt-engineering', 'chain-of-thought', 
-  'rag', 'agent', 'ai-gateway', 
-  'mcp', 'tool-calling', 'multi-agent'
+  'llm', 'prompt', 'tokenizer', 'temperature',
+  'embedding', 'vector-db', 'fine-tuning',
+  'prompt-engineering', 'chain-of-thought',
+  'rag', 'agent', 'ai-gateway',
+  'mcp', 'tool-calling', 'multi-agent',
 ];
+
+/* ============================================================
+ * 关系数据（图谱连线使用）
+ * ============================================================ */
+
+export const relations: RelationData[] = [
+  // LLM 基础关系
+  {source: 'llm', target: 'prompt', label: '使用'},
+  {source: 'llm', target: 'tokenizer', label: '依赖'},
+  {source: 'llm', target: 'temperature', label: '受控于'},
+
+  // Prompt 相关
+  {source: 'prompt-engineering', target: 'prompt', label: '优化'},
+  {source: 'llm', target: 'prompt-engineering', label: '依赖'},
+
+  // Embedding 相关
+  {source: 'embedding', target: 'llm', label: '输入处理'},
+  {source: 'embedding', target: 'vector-db', label: '存储到'},
+
+  // RAG 架构
+  {source: 'llm', target: 'rag', label: '使用'},
+  {source: 'rag', target: 'embedding', label: '依赖'},
+  {source: 'rag', target: 'vector-db', label: '依赖'},
+
+  // Agent 架构
+  {source: 'llm', target: 'agent', label: '驱动'},
+  {source: 'agent', target: 'rag', label: '增强'},
+  {source: 'agent', target: 'tool-calling', label: '使用'},
+
+  // AI Gateway
+  {source: 'agent', target: 'ai-gateway', label: '通过'},
+  {source: 'llm', target: 'ai-gateway', label: '通过'},
+
+  // Tool Calling & MCP
+  {source: 'tool-calling', target: 'mcp', label: '基于'},
+  {source: 'agent', target: 'mcp', label: '使用'},
+
+  // Multi-Agent
+  {source: 'multi-agent', target: 'agent', label: '包含多个'},
+  {source: 'multi-agent', target: 'ai-gateway', label: '协调'},
+
+  // Fine-tuning
+  {source: 'fine-tuning', target: 'llm', label: '优化'},
+
+  // Chain of Thought
+  {source: 'chain-of-thought', target: 'llm', label: '增强'},
+  {source: 'chain-of-thought', target: 'agent', label: '用于'},
+];
+
+/* ============================================================
+ * 派生数据：图谱节点简化数据
+ * ============================================================ */
+
+/** 从完整数据派生图谱所需的简化数据 */
+export const concepts: ConceptData[] = conceptOrder.map(id => {
+  const c = conceptMap[id];
+  return {
+    id: c.id,
+    name: c.name,
+    nameEn: c.nameEn,
+    abbreviation: c.abbreviation,
+    category: c.category,
+    difficulty: c.difficulty,
+    tags: c.tags,
+    tooltip: c.tooltip,
+  };
+});
+
+/* ============================================================
+ * 导出：详情页数据访问
+ * ============================================================ */
+
+/** 按概念 ID 获取完整详情 */
+export function getConceptDetail(id: string): ConceptDetail | null {
+  return conceptMap[id] || null;
+}
+
+/** 获取所有概念详情（按 conceptOrder 排序） */
+export function getAllConceptDetails(): ConceptDetail[] {
+  return conceptOrder.map(id => conceptMap[id]);
+}
+
+/** 所有概念详情的 Record（兼容旧代码） */
+export const allConcepts: Record<string, ConceptDetail> = conceptMap;

@@ -50,7 +50,8 @@ const config: Config = {
     ],
   ],
 
-
+  // @antv/x6 v3 通过全局脚本加载（其 ESM 包与 Docusaurus webpack 5 不兼容）
+  // 类型声明见 src/types/x6.d.ts
 
   themeConfig: {
     image: 'img/social-card.png',

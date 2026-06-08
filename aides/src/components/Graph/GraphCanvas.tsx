@@ -1,5 +1,6 @@
-import React, {useEffect, useRef} from 'react';
-import {concepts, relations, ConceptData} from './types';
+import React, {useEffect, useRef, useState} from 'react';
+import {concepts, relations} from '@site/src/data/allConcepts';
+import type {ConceptData} from './types';
 import styles from './GraphCanvas.module.css';
 
 const categoryColors: Record<string, {bg: string; border: string}> = {
@@ -12,11 +13,9 @@ const categoryColors: Record<string, {bg: string; border: string}> = {
 
 const categoryOrder = ['basic', 'tech', 'methodology', 'architecture', 'tool'];
 
-declare global {
-  interface Window {
-    X6: any;
-  }
-}
+// X6 Graph 实例类型（通过全局脚本加载，类型声明见 src/types/x6.d.ts）
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type X6Graph = any;
 
 interface GraphCanvasProps {
   onNodeClick?: (conceptId: string) => void;
@@ -30,11 +29,21 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   searchQuery,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<any>(null);
+  const graphRef = useRef<X6Graph>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const onNodeClickRef = useRef(onNodeClick);
+  const [loading, setLoading] = useState(true);
 
+  // 保持 callback ref 最新，避免触发 useEffect 重建
   useEffect(() => {
-    if (!containerRef.current || graphRef.current) return;
+    onNodeClickRef.current = onNodeClick;
+  }, [onNodeClick]);
+
+  // ============================================================
+  // Effect 1: 初始化 Graph 实例（只执行一次）
+  // ============================================================
+  useEffect(() => {
+    if (!containerRef.current) return;
 
     const initGraph = () => {
       if (!window.X6) {
@@ -93,58 +102,13 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       containerRef.current!.appendChild(tooltipContainer);
       tooltipRef.current = tooltipContainer;
 
-      graphRef.current = graph;
-
-      const layoutConcepts = (nodes: ConceptData[]) => {
-        const categoryNodes: Record<string, ConceptData[]> = {};
-
-        nodes.forEach(node => {
-          if (!categoryNodes[node.category]) {
-            categoryNodes[node.category] = [];
-          }
-          categoryNodes[node.category].push(node);
-        });
-
-        const positions: Record<string, {x: number; y: number}> = {};
-        const categoryY: Record<string, number> = {
-          basic: 80,
-          tech: 220,
-          methodology: 360,
-          architecture: 500,
-          tool: 640,
-        };
-
-        categoryOrder.forEach(cat => {
-          const catNodes = categoryNodes[cat] || [];
-          const startX = (1400 - (catNodes.length - 1) * 180) / 2;
-
-          catNodes.forEach((node, idx) => {
-            positions[node.id] = {
-              x: startX + idx * 180,
-              y: categoryY[cat],
-            };
-          });
-        });
-
-        return positions;
-      };
-
+      // 计算布局位置
       const positions = layoutConcepts(concepts);
 
+      // 添加所有节点
       concepts.forEach(concept => {
         const pos = positions[concept.id];
         const colors = categoryColors[concept.category] || categoryColors.basic;
-
-        const shouldHighlight =
-          !searchQuery ||
-          concept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          concept.abbreviation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          concept.tags.some(tag =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-
-        const isActive =
-          !selectedCategory || selectedCategory === concept.category;
 
         graph.addNode({
           id: concept.id,
@@ -154,18 +118,17 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           height: 70,
           attrs: {
             body: {
-              fill: shouldHighlight && isActive ? colors.bg : '#f1f5f9',
-              stroke: shouldHighlight && isActive ? colors.border : '#cbd5e1',
-              strokeWidth: shouldHighlight && isActive ? 2 : 1,
+              fill: colors.bg,
+              stroke: colors.border,
+              strokeWidth: 2,
               rx: 8,
               ry: 8,
-              opacity: shouldHighlight && isActive ? 1 : 0.4,
             },
             label: {
               text: `${concept.name}\n(${concept.abbreviation})`,
               fontSize: 12,
-              fontWeight: shouldHighlight && isActive ? 600 : 400,
-              fill: shouldHighlight && isActive ? '#213547' : '#94a3b8',
+              fontWeight: 600,
+              fill: '#213547',
               refX: 0.5,
               refY: 0.5,
               textAnchor: 'middle',
@@ -176,96 +139,14 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
         });
       });
 
-      // 使用图谱级别的事件监听
-      graph.on('node:click', ({node}) => {
-        const conceptId = node.id;
-        if (onNodeClick) {
-          onNodeClick(conceptId);
-        }
-      });
-
-      // 使用 SVG 原生事件监听 Tooltip
-      const svgContainer = containerRef.current!.querySelector('svg');
-      
-      if (svgContainer) {
-        svgContainer.addEventListener('mouseover', (e) => {
-          const target = e.target as HTMLElement;
-          // 查找最近的节点组元素
-          const nodeGroup = target.closest('[data-cell-id]');
-          if (!nodeGroup) return;
-          
-          const cellId = nodeGroup.getAttribute('data-cell-id');
-          if (!cellId) return;
-          
-          const cell = graph.getCellById(cellId);
-          if (!cell || !cell.isNode || !cell.isNode()) return;
-
-          const concept: ConceptData = cell.getData()?.concept;
-          if (!concept) return;
-
-          const pos = cell.getPosition();
-          const size = cell.getSize();
-
-          // 构建 Tooltip 内容
-          tooltipContainer.innerHTML = `
-            <div style="font-weight: 600; margin-bottom: 6px; font-size: 14px;">
-              ${concept.name} (${concept.abbreviation})
-            </div>
-            <div style="color: #cbd5e1; margin-bottom: 8px; font-size: 11px;">
-              ${concept.nameEn}
-            </div>
-            <div style="line-height: 1.5; margin-bottom: 8px;">
-              ${concept.tooltip.summary}
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-              ${concept.tags.map(tag => `<span style="background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 11px;">${tag}</span>`).join('')}
-            </div>
-          `;
-
-          // 计算 Tooltip 位置（节点上方居中）
-          const tooltipX = pos.x + size.width / 2;
-          const tooltipY = pos.y - 10;
-
-          tooltipContainer.style.left = `${tooltipX}px`;
-          tooltipContainer.style.top = `${tooltipY}px`;
-          tooltipContainer.style.transform = 'translate(-50%, -100%)';
-          tooltipContainer.style.opacity = '1';
-        });
-
-        svgContainer.addEventListener('mouseout', (e) => {
-          const target = e.target as HTMLElement;
-          const nodeGroup = target.closest('[data-cell-id]');
-          if (!nodeGroup) return;
-          tooltipContainer.style.opacity = '0';
-        });
-      }
-
+      // 添加所有边
       relations.forEach(relation => {
         const sourcePos = positions[relation.source];
         const targetPos = positions[relation.target];
-
         if (!sourcePos || !targetPos) return;
 
-        const sourceConcept = concepts.find(c => c.id === relation.source);
-        const targetConcept = concepts.find(c => c.id === relation.target);
-
-        const shouldHighlight =
-          (!searchQuery ||
-            (sourceConcept &&
-              (sourceConcept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                sourceConcept.tags.some(tag =>
-                  tag.toLowerCase().includes(searchQuery.toLowerCase())
-                ))) ||
-            (targetConcept &&
-              (targetConcept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                targetConcept.tags.some(tag =>
-                  tag.toLowerCase().includes(searchQuery.toLowerCase())
-                )))) &&
-          (!selectedCategory ||
-            (sourceConcept && sourceConcept.category === selectedCategory) ||
-            (targetConcept && targetConcept.category === selectedCategory));
-
         graph.addEdge({
+          id: `edge-${relation.source}-${relation.target}`,
           source: relation.source,
           target: relation.target,
           labels: [
@@ -273,7 +154,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
               attrs: {
                 labelText: {
                   text: relation.label,
-                  fill: shouldHighlight ? '#64748b' : '#cbd5e1',
+                  fill: '#64748b',
                   fontSize: 11,
                 },
               },
@@ -281,8 +162,8 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           ],
           attrs: {
             line: {
-              stroke: shouldHighlight ? '#94a3b8' : '#e2e8f0',
-              strokeWidth: shouldHighlight ? 2 : 1,
+              stroke: '#94a3b8',
+              strokeWidth: 2,
               targetMarker: {
                 name: 'classic',
                 size: 6,
@@ -298,30 +179,262 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
         });
       });
 
+      // 绑定节点点击事件
+      graph.on('node:click', ({node}: {node: X6Graph}) => {
+        const conceptId = node.id;
+        if (onNodeClickRef.current) {
+          onNodeClickRef.current(conceptId);
+        }
+      });
+
+      // 绑定 Tooltip 事件（带 200ms 防抖）
+      const svgContainer = containerRef.current!.querySelector('svg');
+      if (svgContainer) {
+        let tooltipTimer: ReturnType<typeof setTimeout> | null = null;
+
+        svgContainer.addEventListener('mouseover', (e: Event) => {
+          const target = e.target as HTMLElement;
+          const nodeGroup = target.closest('[data-cell-id]');
+          if (!nodeGroup) return;
+
+          const cellId = nodeGroup.getAttribute('data-cell-id');
+          if (!cellId) return;
+
+          const cell = graph.getCellById(cellId);
+          if (!cell || !cell.isNode || !cell.isNode()) return;
+
+          const concept: ConceptData = cell.getData()?.concept;
+          if (!concept) return;
+
+          if (tooltipTimer) clearTimeout(tooltipTimer);
+          tooltipTimer = setTimeout(() => {
+            const pos = cell.getPosition();
+            const size = cell.getSize();
+
+            tooltipContainer.innerHTML = `
+              <div style="font-weight: 600; margin-bottom: 6px; font-size: 14px;">
+                ${concept.name} (${concept.abbreviation})
+              </div>
+              <div style="color: #cbd5e1; margin-bottom: 8px; font-size: 11px;">
+                ${concept.nameEn}
+              </div>
+              <div style="line-height: 1.5; margin-bottom: 8px;">
+                ${concept.tooltip.summary}
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                ${concept.tags.map(tag => `<span style="background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 11px;">${tag}</span>`).join('')}
+              </div>
+            `;
+
+            const tooltipX = pos.x + size.width / 2;
+            const tooltipY = pos.y - 10;
+            tooltipContainer.style.left = `${tooltipX}px`;
+            tooltipContainer.style.top = `${tooltipY}px`;
+            tooltipContainer.style.transform = 'translate(-50%, -100%)';
+            tooltipContainer.style.opacity = '1';
+          }, 200);
+        });
+
+        svgContainer.addEventListener('mouseout', (e: Event) => {
+          const target = e.target as HTMLElement;
+          const nodeGroup = target.closest('[data-cell-id]');
+          if (!nodeGroup) return;
+
+          if (tooltipTimer) {
+            clearTimeout(tooltipTimer);
+            tooltipTimer = null;
+          }
+          tooltipContainer.style.opacity = '0';
+        });
+      }
+
       graph.centerContent();
+      graphRef.current = graph;
+      setLoading(false);
     };
 
+    // 等待 X6 全局脚本加载完成
+    // SPA 模式下 window.load 事件可能早已触发，需用轮询兜底
     if (window.X6) {
       initGraph();
     } else {
-      window.addEventListener('load', initGraph);
+      // 先尝试监听 script 标签的 load 事件
+      const script = document.querySelector('script[src="/x6.min.js"]');
+      const onScriptLoad = () => {
+        if (window.X6) initGraph();
+      };
+
+      if (script && !script.getAttribute('data-loaded')) {
+        script.addEventListener('load', onScriptLoad);
+      }
+
+      // 轮询兜底：每 100ms 检查一次，最多等待 15 秒
+      let pollCount = 0;
+      const pollInterval = setInterval(() => {
+        pollCount++;
+        if (window.X6) {
+          clearInterval(pollInterval);
+          initGraph();
+        } else if (pollCount > 150) {
+          clearInterval(pollInterval);
+          setLoading(false); // 超时，隐藏 loading
+          console.error('AntV X6 加载超时');
+        }
+      }, 100);
+
+      // cleanup 中清理
+      return () => {
+        clearInterval(pollInterval);
+        script?.removeEventListener('load', onScriptLoad);
+        if (graphRef.current) {
+          graphRef.current.dispose();
+          graphRef.current = null;
+        }
+        if (tooltipRef.current && tooltipRef.current.parentNode) {
+          tooltipRef.current.parentNode.removeChild(tooltipRef.current);
+          tooltipRef.current = null;
+        }
+      };
     }
 
+    // 如果 X6 已就绪并执行了 initGraph，仍需返回 cleanup
     return () => {
       if (graphRef.current) {
         graphRef.current.dispose();
         graphRef.current = null;
       }
-      // 清理 Tooltip 容器
       if (tooltipRef.current && tooltipRef.current.parentNode) {
         tooltipRef.current.parentNode.removeChild(tooltipRef.current);
         tooltipRef.current = null;
       }
     };
-  }, [selectedCategory, searchQuery, onNodeClick]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // ============================================================
+  // Effect 2: 响应筛选/搜索 — 动态更新节点和边样式（不重建）
+  // ============================================================
+  useEffect(() => {
+    const graph = graphRef.current;
+    if (!graph) return;
+
+    const lowerQuery = (searchQuery || '').toLowerCase();
+
+    // 计算每个节点是否匹配
+    const nodeMatchMap: Record<string, boolean> = {};
+    concepts.forEach(concept => {
+      const matchesSearch = !lowerQuery ||
+        concept.name.toLowerCase().includes(lowerQuery) ||
+        concept.abbreviation.toLowerCase().includes(lowerQuery) ||
+        concept.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+
+      const matchesCategory = !selectedCategory || concept.category === selectedCategory;
+      nodeMatchMap[concept.id] = matchesSearch && matchesCategory;
+    });
+
+    // 更新所有节点样式
+    const nodes = graph.getNodes();
+    nodes.forEach((node: X6Graph) => {
+      const concept: ConceptData = node.getData()?.concept;
+      if (!concept) return;
+
+      const isActive = nodeMatchMap[concept.id] !== false;
+      const colors = categoryColors[concept.category] || categoryColors.basic;
+
+      node.setAttrs({
+        body: {
+          fill: isActive ? colors.bg : '#f1f5f9',
+          stroke: isActive ? colors.border : '#cbd5e1',
+          strokeWidth: isActive ? 2 : 1,
+          opacity: isActive ? 1 : 0.4,
+        },
+        label: {
+          fontWeight: isActive ? 600 : 400,
+          fill: isActive ? '#213547' : '#94a3b8',
+        },
+      });
+    });
+
+    // 更新所有边样式
+    const edges = graph.getEdges();
+    edges.forEach((edge: X6Graph) => {
+      const sourceId = edge.getSourceCellId?.() || edge.getSource()?.cell;
+      const targetId = edge.getTargetCellId?.() || edge.getTarget()?.cell;
+
+      const sourceActive = sourceId ? nodeMatchMap[sourceId] !== false : true;
+      const targetActive = targetId ? nodeMatchMap[targetId] !== false : true;
+      const isActive = sourceActive && targetActive;
+
+      edge.setAttrs({
+        line: {
+          stroke: isActive ? '#94a3b8' : '#e2e8f0',
+          strokeWidth: isActive ? 2 : 1,
+        },
+      });
+
+      // 更新边标签颜色
+      const labels = edge.getLabels?.();
+      if (labels && labels.length > 0) {
+        edge.setLabels([{
+          attrs: {
+            labelText: {
+              text: labels[0]?.attrs?.labelText?.text || '',
+              fill: isActive ? '#64748b' : '#cbd5e1',
+              fontSize: 11,
+            },
+          },
+        }]);
+      }
+    });
+  }, [selectedCategory, searchQuery]);
+
+  // ============================================================
+  // 布局算法
+  // ============================================================
+  const layoutConcepts = (nodes: ConceptData[]) => {
+    const categoryNodes: Record<string, ConceptData[]> = {};
+
+    nodes.forEach(node => {
+      if (!categoryNodes[node.category]) {
+        categoryNodes[node.category] = [];
+      }
+      categoryNodes[node.category].push(node);
+    });
+
+    const positions: Record<string, {x: number; y: number}> = {};
+    const categoryY: Record<string, number> = {
+      basic: 80,
+      tech: 220,
+      methodology: 360,
+      architecture: 500,
+      tool: 640,
+    };
+
+    categoryOrder.forEach(cat => {
+      const catNodes = categoryNodes[cat] || [];
+      const startX = (1400 - (catNodes.length - 1) * 180) / 2;
+      catNodes.forEach((node, idx) => {
+        positions[node.id] = {
+          x: startX + idx * 180,
+          y: categoryY[cat],
+        };
+      });
+    });
+
+    return positions;
+  };
+
+  // ============================================================
+  // 渲染：始终保留 graph 容器（ref 不能被条件渲染移除）
+  // ============================================================
   return (
     <div className={styles.container}>
+      {loading && (
+        <div className={styles.loading}>
+          <div className={styles.spinner} />
+          <span>图谱加载中...</span>
+        </div>
+      )}
       <div ref={containerRef} className={styles.graph} />
     </div>
   );
