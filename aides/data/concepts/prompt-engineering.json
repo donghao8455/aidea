@@ -1,0 +1,89 @@
+{
+  "id": "prompt-engineering",
+  "name": "提示词工程",
+  "nameEn": "Prompt Engineering",
+  "abbreviation": "PE",
+  "category": "methodology",
+  "difficulty": 2,
+  "tags": ["methodology", "best-practice"],
+  "level": 1,
+  "tooltip": {
+    "summary": "设计和优化提示词以获得更好AI输出的方法论和技巧集合"
+  },
+  "detail": {
+    "definition": "提示词工程(Prompt Engineering)是设计和优化输入提示词(prompt)以引导大语言模型产生期望输出的技术和方法论。它涉及理解模型行为、设计有效的提示结构、使用特定技巧(如Few-shot、Chain-of-Thought)来提升输出质量。提示词工程是发挥LLM潜力的关键技能，无需修改模型即可获得显著性能提升。",
+    "plainExplanation": "提示词工程就像学习如何与AI"好好说话"。同样的任务，不同的问法会得到完全不同的结果。提示词工程教你如何组织语言、提供示例、设定角色，让AI更准确地理解你的需求并给出最佳答案。",
+    "analogy": "提示词工程就像学习如何向厨师点菜。如果你只说"做好吃的"，结果可能不如预期。但如果你说"我要一份宫保鸡丁，少辣、不要花生、用鸡腿肉"，结果就会精准很多。提示词工程就是教你如何把需求表达清楚。",
+    "keyPoints": [
+      "清晰具体: 明确任务、格式、约束条件",
+      "角色设定: 让AI扮演特定角色(专家、助手等)",
+      "Few-shot示例: 提供输入输出示例帮助AI理解模式",
+      "Chain-of-Thought: 引导AI逐步推理复杂问题",
+      "迭代优化: 根据输出不断调整提示词"
+    ],
+    "useCases": [
+      {
+        "title": "内容生成优化",
+        "description": "通过结构化提示词获得高质量内容",
+        "example": "使用"角色+任务+格式+示例"模板，生成符合品牌调性的营销文案"
+      },
+      {
+        "title": "代码辅助",
+        "description": "优化提示词获得更准确的代码建议",
+        "example": "提供代码上下文、错误信息和期望输出，获得精准的Bug修复建议"
+      },
+      {
+        "title": "数据分析",
+        "description": "引导AI正确理解和分析数据",
+        "example": "提供数据格式说明、分析目标和输出要求，获得准确的分析结果"
+      },
+      {
+        "title": "多轮对话",
+        "description": "设计对话流程和上下文管理",
+        "example": "客服机器人通过精心设计的提示词保持对话连贯性"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "prompt",
+        "relationType": "optimizes",
+        "relationLabel": "优化"
+      },
+      {
+        "conceptId": "chain-of-thought",
+        "relationType": "uses",
+        "relationLabel": "使用"
+      },
+      {
+        "conceptId": "llm",
+        "relationType": "applies-to",
+        "relationLabel": "应用于"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Prompt Engineering Guide",
+        "url": "https://www.promptingguide.ai/",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      },
+      {
+        "title": "Learn Prompting",
+        "url": "https://learnprompting.org/",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

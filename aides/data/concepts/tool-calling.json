@@ -1,0 +1,89 @@
+{
+  "id": "tool-calling",
+  "name": "工具调用",
+  "nameEn": "Tool Calling",
+  "abbreviation": "Tool Calling",
+  "category": "tool",
+  "difficulty": 3,
+  "tags": ["tool", "function", "integration"],
+  "level": 2,
+  "tooltip": {
+    "summary": "让AI能够识别需要并调用外部函数/工具来完成任务的能力"
+  },
+  "detail": {
+    "definition": "工具调用(Tool Calling，也称Function Calling)是大语言模型的一项重要能力，允许模型在需要时调用外部工具或函数来完成任务。当面对需要实时数据、精确计算或外部系统交互的问题时，模型可以生成结构化的函数调用请求(包含函数名和参数)，由外部系统执行后将结果返回给模型，模型再基于结果生成最终回答。这是构建AI Agent的核心能力。",
+    "plainExplanation": "工具调用就像AI的"双手"。没有工具时，AI只能"动嘴皮子"回答问题；有了工具调用能力，AI可以"动手做事"：查天气、算数学、发邮件、查数据库。AI决定用什么工具、传什么参数，外部系统执行后告诉AI结果。",
+    "analogy": "就像餐厅服务员点单系统。客人说"我要一杯冰美式"，服务员(像AI)在系统中选择"咖啡制作"功能，传入参数{饮品:美式, 温度:冰}。厨房执行后返回"做好了"，服务员再端给客人。",
+    "keyPoints": [
+      "模型决定何时调用工具，以及用什么参数",
+      "工具定义包括: 名称、描述、参数schema",
+      "支持并行调用多个工具",
+      "执行结果返回模型，用于生成最终回答",
+      "主流支持: OpenAI、Claude、Gemini等都支持"
+    ],
+    "useCases": [
+      {
+        "title": "实时信息查询",
+        "description": "获取天气、股价、新闻等实时数据",
+        "example": "用户问"北京今天天气"，AI调用天气API获取实时数据"
+      },
+      {
+        "title": "精确计算",
+        "description": "调用计算器或代码执行器处理复杂计算",
+        "example": "计算复杂的数学表达式或统计分析"
+      },
+      {
+        "title": "系统操作",
+        "description": "操作数据库、发送邮件、创建日程",
+        "example": "AI助手帮用户发送会议邀请邮件"
+      },
+      {
+        "title": "知识检索",
+        "description": "查询企业内部知识库或文档",
+        "example": "查询产品手册回答客户技术问题"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "agent",
+        "relationType": "enables",
+        "relationLabel": "使能"
+      },
+      {
+        "conceptId": "mcp",
+        "relationType": "standardized-by",
+        "relationLabel": "被标准化"
+      },
+      {
+        "conceptId": "llm",
+        "relationType": "capability-of",
+        "relationLabel": "能力"
+      }
+    ],
+    "resources": [
+      {
+        "title": "OpenAI Function Calling文档",
+        "url": "https://platform.openai.com/docs/guides/function-calling",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      },
+      {
+        "title": "LangChain Tools教程",
+        "url": "https://python.langchain.com/docs/modules/agents/tools/",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

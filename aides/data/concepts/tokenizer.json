@@ -1,0 +1,79 @@
+{
+  "id": "tokenizer",
+  "name": "分词器",
+  "nameEn": "Tokenizer",
+  "abbreviation": "Tokenizer",
+  "category": "basic",
+  "difficulty": 2,
+  "tags": ["basic", "nlp", "preprocessing"],
+  "level": 1,
+  "tooltip": {
+    "summary": "将文本分割成模型可处理的token的工具，是文本进入AI模型的第一步"
+  },
+  "detail": {
+    "definition": "分词器(Tokenizer)是将自然语言文本转换为模型可理解的数字序列的工具。它将文本切分成称为"token"的基本单元(可能是单词、子词或字符)，并将每个token映射为对应的数字ID。这是文本进入神经网络模型前的必经步骤，也是决定模型理解和生成能力的关键因素之一。",
+    "plainExplanation": "AI模型其实不懂文字，它只懂数字。分词器就像一个"翻译官"，把你写的文字翻译成AI能理解的数字。比如"你好"可能被翻译成[123, 456]这样的数字序列。不同语言、不同模型的分词方式都不一样。",
+    "analogy": "分词器就像乐谱的音符分割器。一首完整的歌曲需要被分割成一个个音符，音乐家才能演奏。同样，一段话需要被分词器分割成一个个token，AI模型才能"阅读"和理解。",
+    "keyPoints": [
+      "Token是模型处理文本的最小单位，可能是单词、子词或字符",
+      "不同模型的分词方式不同，如GPT使用BPE算法，BERT使用WordPiece",
+      "中英文token数量差异大，中文通常需要更多token表示同样内容",
+      "分词器的词汇表大小影响模型能力和计算效率",
+      "特殊token如[CLS]、[SEP]用于标记句子边界和分类任务"
+    ],
+    "useCases": [
+      {
+        "title": "多语言处理",
+        "description": "统一处理不同语言的文本，支持跨语言理解和生成",
+        "example": "多语言分词器让模型能同时理解中文、英文、日文等多种语言"
+      },
+      {
+        "title": "生僻词处理",
+        "description": "通过子词分割处理未在词汇表中的生僻词",
+        "example": ""ChatGPT"可能被分成[Chat, G, PT]三个子词，即使它不在词汇表中"
+      },
+      {
+        "title": "代码处理",
+        "description": "专门的分词器处理编程语言，保留语法结构",
+        "example": "代码分词器能识别变量名、函数名、关键字等代码元素"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "llm",
+        "relationType": "component-of",
+        "relationLabel": "组成部分"
+      },
+      {
+        "conceptId": "embedding",
+        "relationType": "precedes",
+        "relationLabel": "先于"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Byte Pair Encoding (BPE) 算法详解",
+        "url": "https://huggingface.co/docs/transformers/tokenizer_summary",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      },
+      {
+        "title": "OpenAI Tokenizer 工具",
+        "url": "https://platform.openai.com/tokenizer",
+        "type": "tool",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

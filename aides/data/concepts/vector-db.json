@@ -1,0 +1,84 @@
+{
+  "id": "vector-db",
+  "name": "向量数据库",
+  "nameEn": "Vector Database",
+  "abbreviation": "Vector DB",
+  "category": "tech",
+  "difficulty": 3,
+  "tags": ["tech", "database", "vector"],
+  "level": 2,
+  "tooltip": {
+    "summary": "专门存储和高效检索向量数据的数据库，支持语义相似度搜索"
+  },
+  "detail": {
+    "definition": "向量数据库(Vector Database)是专门设计用于存储、索引和查询高维向量数据的数据库系统。与传统关系型数据库不同，向量数据库优化了相似度搜索(如余弦相似度、欧氏距离)，能在海量向量中快速找到最相似的向量。它是RAG、推荐系统、图像搜索等应用的基础设施。",
+    "plainExplanation": "向量数据库就像一个超级图书馆管理员。普通图书馆按书名分类，而向量数据库按"内容相似度"排列。你问"找一本关于爱情的小说"，它能在几毫秒内从百万本书中找到最相关的几本，即使书名中没有"爱情"二字。",
+    "analogy": "向量数据库就像人脸识别系统。系统存储了数百万张人脸的向量特征，当你拍照搜索时，它能在瞬间找到最相似的人脸。传统数据库做不到这种"模糊匹配"，但向量数据库专为这种任务设计。",
+    "keyPoints": [
+      "使用近似最近邻(ANN)算法实现毫秒级相似度搜索",
+      "支持海量数据(十亿级向量)的高性能检索",
+      "常用索引: HNSW、IVF、PQ等",
+      "主流产品: Pinecone、Milvus、Weaviate、Chroma、pgvector",
+      "通常与Embedding模型配合使用"
+    ],
+    "useCases": [
+      {
+        "title": "RAG知识库",
+        "description": "存储文档向量，支持快速语义检索",
+        "example": "企业知识库使用Pinecone存储10万份文档，检索延迟<100ms"
+      },
+      {
+        "title": "以图搜图",
+        "description": "通过图片向量找到相似图片",
+        "example": "电商平台用户上传照片，找到相似商品"
+      },
+      {
+        "title": "异常检测",
+        "description": "识别与正常模式不符的向量",
+        "example": "金融系统检测与正常交易模式不符的欺诈行为"
+      },
+      {
+        "title": "个性化推荐",
+        "description": "基于用户和物品向量相似度推荐",
+        "example": "音乐App根据用户听歌历史向量推荐相似歌曲"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "embedding",
+        "relationType": "stores",
+        "relationLabel": "存储"
+      },
+      {
+        "conceptId": "rag",
+        "relationType": "used-by",
+        "relationLabel": "被使用"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Pinecone向量数据库文档",
+        "url": "https://docs.pinecone.io/",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      },
+      {
+        "title": "Milvus开源向量数据库",
+        "url": "https://milvus.io/docs",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

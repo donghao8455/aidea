@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+Sitemap: https://aides.thend.cn/sitemap.xml
+
+# Disallow API documentation paths if any
+Disallow: /api/
+Disallow: /_docusaurus/
+Disallow: /search*

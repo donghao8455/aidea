@@ -1,0 +1,84 @@
+{
+  "id": "temperature",
+  "name": "温度参数",
+  "nameEn": "Temperature",
+  "abbreviation": "Temperature",
+  "category": "basic",
+  "difficulty": 2,
+  "tags": ["basic", "parameter", "generation"],
+  "level": 1,
+  "tooltip": {
+    "summary": "控制模型输出随机性的参数，高温更创意，低温更确定"
+  },
+  "detail": {
+    "definition": "温度参数(Temperature)是控制大语言模型输出随机性的超参数，取值范围通常为0到2。温度越低(接近0)，模型输出越确定、保守，倾向于选择概率最高的词；温度越高(接近2)，输出越随机、有创意，会更多考虑概率较低的词。这是调节模型创造力和一致性的重要手段。",
+    "plainExplanation": "温度参数就像AI的"创意开关"。调低温度，AI就像严谨的会计师，每次回答都很稳定、可预测；调高温度，AI就像天马行空的艺术家，每次回答都有新意，但也可能出错。你需要根据任务选择合适的温度。",
+    "analogy": "温度参数就像厨师的"调料量"。低温(0.1-0.3)像严格按照食谱做菜，每次味道都一样；中温(0.5-0.7)像有经验的厨师，会适当调整；高温(1.0+)像创意料理，每次都有惊喜，但也可能踩雷。",
+    "keyPoints": [
+      "Temperature=0时，模型几乎总是选择概率最高的词，输出最确定",
+      "Temperature=0.7是平衡创造性和准确性的常用设置",
+      "Temperature>1时，输出更加随机和多样化",
+      "不同任务需要不同温度：代码生成用低温，创意写作用高温",
+      "温度与Top-p采样通常配合使用，共同控制输出多样性"
+    ],
+    "useCases": [
+      {
+        "title": "代码生成",
+        "description": "使用低温(0.1-0.3)确保代码正确性和一致性",
+        "example": "生成Python函数时设置temperature=0.2，确保语法正确"
+      },
+      {
+        "title": "创意写作",
+        "description": "使用高温(0.8-1.2)获得多样化的创意内容",
+        "example": "写小说情节时设置temperature=1.0，获得意想不到的故事发展"
+      },
+      {
+        "title": "问答系统",
+        "description": "使用中低温(0.3-0.5)保证回答准确可靠",
+        "example": "客服机器人设置temperature=0.3，提供标准一致的答案"
+      },
+      {
+        "title": "头脑风暴",
+        "description": "使用高温(1.0-1.5)获得大量创意点子",
+        "example": "产品创意阶段设置temperature=1.2，激发更多创新想法"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "llm",
+        "relationType": "parameter-of",
+        "relationLabel": "参数"
+      },
+      {
+        "conceptId": "prompt",
+        "relationType": "related",
+        "relationLabel": "相关"
+      }
+    ],
+    "resources": [
+      {
+        "title": "OpenAI API参数指南",
+        "url": "https://platform.openai.com/docs/api-reference/chat/create#chat-create-temperature",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      },
+      {
+        "title": "Temperature与Top-p的区别",
+        "url": "https://docs.anthropic.com/claude/docs/temperature-top-p-and-top-k",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": false
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

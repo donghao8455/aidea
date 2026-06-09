@@ -1,0 +1,94 @@
+{
+  "id": "agentic-ai",
+  "name": "代理式AI",
+  "nameEn": "Agentic AI",
+  "abbreviation": "Agentic AI",
+  "category": "architecture",
+  "difficulty": 3,
+  "tags": ["architecture", "agent", "2025", "trend"],
+  "level": 1,
+  "tooltip": {
+    "summary": "具备自主规划、工具使用和多步执行能力的AI系统范式，代表AI从\"工具\"到\"员工\"的转变"
+  },
+  "detail": {
+    "definition": "代理式AI(Agentic AI)是2025年AI发展的核心范式，指具备自主规划、工具使用和多步执行能力的AI系统。与传统的问答式AI不同，Agentic AI能理解长期目标、分解任务、调用工具、适应环境变化，完成从"给指令"到"给目标"的转变。麦肯锡报告显示62%的企业在探索Agentic AI，但规模化部署仍面临挑战。",
+    "plainExplanation": "普通AI是\"工具\"——你问什么它答什么。Agentic AI是\"员工\"——你给它目标，它自己想办法完成。就像工具和员工的区别：工具需要你操作，员工只需要你告诉它目标。",
+    "analogy": "就像从\"用计算器\"到\"雇会计\"的区别。计算器需要你一步步操作，会计只需要你告诉它\"帮我算一下今年的财务报表\"，它自己会完成所有步骤。",
+    "keyPoints": [
+      "目标导向：理解高层目标而非执行单次指令",
+      "自主规划：将复杂目标分解为可执行步骤",
+      "工具使用：调用API、搜索信息、执行操作",
+      "适应能力：能处理意外情况和环境变化",
+      "长期记忆：维护跨会话的上下文和知识"
+    ],
+    "useCases": [
+      {
+        "title": "智能研究助手",
+        "description": "自主完成复杂研究任务",
+        "example": "AI自动搜索文献、分析数据、生成报告"
+      },
+      {
+        "title": "自动化业务流程",
+        "description": "端到端自动化复杂业务流程",
+        "example": "从订单处理到客户服务的全流程自动化"
+      },
+      {
+        "title": "代码开发团队",
+        "description": "AI程序员组成的开发团队",
+        "example": "Devin、Claude Code等AI开发者协作完成项目"
+      },
+      {
+        "title": "个人AI助手",
+        "description": "能代替用户执行多步骤任务",
+        "example": "\"帮我安排下周去上海的出差\"→AI自动完成所有预订"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "agent",
+        "relationType": "is",
+        "relationLabel": "是"
+      },
+      {
+        "conceptId": "llm",
+        "relationType": "powered-by",
+        "relationLabel": "驱动"
+      },
+      {
+        "conceptId": "reasoning",
+        "relationType": "uses",
+        "relationLabel": "使用"
+      },
+      {
+        "conceptId": "mcp",
+        "relationType": "connects-via",
+        "relationLabel": "通过MCP连接"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Nvidia: What is Agentic AI",
+        "url": "https://blogs.nvidia.com/blog/what-is-agentic-ai/",
+        "type": "article",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      },
+      {
+        "title": "McKinsey 2025 AI State Report",
+        "url": "https://www.mckinsey.com/industries/technology/our-insights/the-state-of-ai",
+        "type": "report",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-06-09",
+    "updatedAt": "2026-06-09",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

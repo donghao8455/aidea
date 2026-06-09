@@ -1,0 +1,89 @@
+{
+  "id": "mcp",
+  "name": "模型上下文协议",
+  "nameEn": "Model Context Protocol",
+  "abbreviation": "MCP",
+  "category": "tool",
+  "difficulty": 4,
+  "tags": ["tool", "protocol", "integration"],
+  "level": 1,
+  "tooltip": {
+    "summary": "AI模型与外部工具和数据源交互的标准协议，由Anthropic提出"
+  },
+  "detail": {
+    "definition": "模型上下文协议(Model Context Protocol, MCP)是由Anthropic推出的开放协议标准，旨在标准化AI模型与外部数据源、工具之间的交互方式。MCP定义了一套统一的接口规范，让AI应用可以无缝连接各种数据源(数据库、文件系统、API等)和工具，解决了以往每个集成点都需要单独开发适配器的问题。MCP采用客户端-服务器架构，支持工具发现、调用和上下文管理。",
+    "plainExplanation": "MCP就像AI世界的"USB接口"。以前每个AI应用连接新工具都要写专门的驱动，就像每个手机都有独特的充电口。MCP定义了统一标准，只要支持MCP的工具，AI应用都能即插即用，大大简化了集成工作。",
+    "analogy": "就像HTTP协议统一了网页访问方式。无论网站用什么技术构建，浏览器都能访问。MCP也想成为AI工具领域的"HTTP"，让任何AI应用都能统一访问任何工具和数据源。",
+    "keyPoints": [
+      "开放标准: 由Anthropic开源，社区共同维护",
+      "客户端-服务器架构: AI应用作为客户端，工具作为服务器",
+      "工具发现: 自动发现可用工具及其参数规范",
+      "上下文管理: 维护对话状态和用户上下文",
+      "安全模型: 明确的权限控制和用户确认机制"
+    ],
+    "useCases": [
+      {
+        "title": "数据库查询",
+        "description": "AI通过MCP安全地查询SQL数据库",
+        "example": "用户问"上月销售额是多少"，AI通过MCP查询企业数据库"
+      },
+      {
+        "title": "文件系统操作",
+        "description": "AI读写本地文件，管理文档",
+        "example": "AI助手通过MCP读取项目代码、修改配置文件"
+      },
+      {
+        "title": "第三方API集成",
+        "description": "统一接入各种SaaS服务",
+        "example": "AI通过MCP调用Slack发消息、查询GitHub Issues"
+      },
+      {
+        "title": "知识库检索",
+        "description": "标准化访问企业知识库",
+        "example": "客服AI通过MCP检索Confluence文档回答用户"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "tool-calling",
+        "relationType": "standardizes",
+        "relationLabel": "标准化"
+      },
+      {
+        "conceptId": "agent",
+        "relationType": "empowers",
+        "relationLabel": "赋能"
+      },
+      {
+        "conceptId": "llm",
+        "relationType": "used-with",
+        "relationLabel": "配合使用"
+      }
+    ],
+    "resources": [
+      {
+        "title": "MCP官方文档",
+        "url": "https://modelcontextprotocol.io/",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      },
+      {
+        "title": "MCP GitHub仓库",
+        "url": "https://github.com/modelcontextprotocol",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

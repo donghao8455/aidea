@@ -1,0 +1,94 @@
+{
+  "id": "agent",
+  "name": "智能体",
+  "nameEn": "AI Agent",
+  "abbreviation": "Agent",
+  "category": "architecture",
+  "difficulty": 4,
+  "tags": ["architecture", "autonomous", "advanced"],
+  "level": 1,
+  "tooltip": {
+    "summary": "能够自主决策、规划并执行任务的AI系统，具备工具使用和反思能力"
+  },
+  "detail": {
+    "definition": "AI智能体(AI Agent)是一种能够自主感知环境、做出决策并执行行动以实现特定目标的AI系统。与传统单次问答不同，Agent具备规划能力(将复杂任务分解)、记忆能力(维护上下文和状态)、工具使用能力(调用外部API和函数)以及反思能力(评估和调整行动)。Agent代表了从"被动回答"到"主动执行"的范式转变。",
+    "plainExplanation": "如果说普通AI是"问答机器人"，那Agent就是"AI员工"。你给它一个目标(如"帮我订一张去北京的机票")，它会自己规划步骤：查航班→比价→选座位→填写信息→支付。遇到问题会自己想办法解决，而不是每次都问你。",
+    "analogy": "Agent就像一位私人助理。你告诉助理"安排下周的上海出差"，助理会自己：查航班、订酒店、安排日程、发确认邮件。你不需要一步步指导，只需要确认最终结果。",
+    "keyPoints": [
+      "自主性: 能独立规划和执行任务，无需人工逐步指导",
+      "规划能力: 将复杂目标分解为可执行的子任务",
+      "工具使用: 能调用API、查询数据库、执行代码等",
+      "记忆能力: 维护短期(对话历史)和长期(知识库)记忆",
+      "反思能力: 能评估行动结果，从错误中学习调整"
+    ],
+    "useCases": [
+      {
+        "title": "自动化办公",
+        "description": "自动处理邮件、安排会议、生成报告",
+        "example": "Agent每天自动整理邮件、提取待办事项、安排日程、生成日报"
+      },
+      {
+        "title": "智能客服",
+        "description": "不仅能回答，还能执行操作(查询订单、发起退款)",
+        "example": "用户说"我要退昨天买的鞋"，Agent自动查询订单、确认政策、发起退款"
+      },
+      {
+        "title": "代码开发",
+        "description": "端到端完成编程任务：需求→设计→编码→测试→部署",
+        "example": "Devin等AI程序员能独立完成整个软件开发流程"
+      },
+      {
+        "title": "数据分析",
+        "description": "自动获取数据、清洗、分析、生成可视化报告",
+        "example": ""分析本月销售数据"→Agent自动连接数据库→查询→分析→生成图表和洞察"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "llm",
+        "relationType": "powered-by",
+        "relationLabel": "驱动"
+      },
+      {
+        "conceptId": "tool-calling",
+        "relationType": "uses",
+        "relationLabel": "使用"
+      },
+      {
+        "conceptId": "rag",
+        "relationType": "uses",
+        "relationLabel": "使用"
+      },
+      {
+        "conceptId": "multi-agent",
+        "relationType": "extends",
+        "relationLabel": "扩展"
+      }
+    ],
+    "resources": [
+      {
+        "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+        "url": "https://arxiv.org/abs/2210.03629",
+        "type": "paper",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      },
+      {
+        "title": "AutoGPT: An Autonomous GPT-4 Experiment",
+        "url": "https://github.com/Significant-Gravitas/AutoGPT",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

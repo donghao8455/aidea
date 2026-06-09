@@ -1,0 +1,84 @@
+{
+  "id": "ai-gateway",
+  "name": "AI网关",
+  "nameEn": "AI Gateway",
+  "abbreviation": "AI Gateway",
+  "category": "architecture",
+  "difficulty": 3,
+  "tags": ["architecture", "infrastructure", "enterprise"],
+  "level": 1,
+  "tooltip": {
+    "summary": "管理AI模型调用的中间层服务，提供统一接口、负载均衡和安全管控"
+  },
+  "detail": {
+    "definition": "AI网关(AI Gateway)是位于应用程序和AI模型服务之间的中间层基础设施。它提供统一的API接口来访问多个模型提供商(如OpenAI、Anthropic、Azure等)，并处理负载均衡、故障转移、速率限制、成本控制、安全防护、日志监控等功能。AI网关是企业级AI应用的核心组件，简化了多模型管理并提升了系统的可靠性和安全性。",
+    "plainExplanation": "AI网关就像一个"AI模型总机"。你的应用只需要打一个电话(统一接口)，网关会帮你：选择最合适的模型、控制调用频率防止超支、一个模型挂了自动切换到备用、记录所有调用日志。你不需要关心后面有多少个模型提供商。",
+    "analogy": "就像企业的电话总机系统。外部只需要一个总机号码，内部可以转分机到不同部门。总机还能：记录通话、限制长途电话、转接备用线路、生成通话报表。AI网关对AI模型调用做同样的事。",
+    "keyPoints": [
+      "统一接口: 一套API访问多个模型提供商",
+      "负载均衡: 智能分配请求到不同模型实例",
+      "故障转移: 某个模型故障时自动切换备用",
+      "成本控制: 速率限制、配额管理、成本追踪",
+      "安全管控: API密钥管理、内容过滤、审计日志"
+    ],
+    "useCases": [
+      {
+        "title": "多模型管理",
+        "description": "统一接入GPT-4、Claude、文心一言等多个模型",
+        "example": "企业应用通过网关根据任务类型自动选择最合适的模型"
+      },
+      {
+        "title": "成本控制",
+        "description": "设置预算上限、监控使用量、优化模型选择",
+        "example": "设置每月API调用预算$1000，超限时自动切换到 cheaper 模型"
+      },
+      {
+        "title": "高可用部署",
+        "description": "多区域部署，故障自动切换",
+        "example": "OpenAI服务异常时，自动切换到Azure OpenAI或Anthropic"
+      },
+      {
+        "title": "安全合规",
+        "description": "敏感信息过滤、访问控制、审计追踪",
+        "example": "自动检测并拦截包含PII(个人身份信息)的请求"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "llm",
+        "relationType": "routes-to",
+        "relationLabel": "路由到"
+      },
+      {
+        "conceptId": "agent",
+        "relationType": "used-by",
+        "relationLabel": "被使用"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Portkey AI Gateway",
+        "url": "https://portkey.ai/",
+        "type": "tool",
+        "language": "en",
+        "difficulty": "beginner",
+        "recommended": true
+      },
+      {
+        "title": "LiteLLM: 统一多模型接口",
+        "url": "https://docs.litellm.ai/",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

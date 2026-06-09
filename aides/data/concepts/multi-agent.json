@@ -1,0 +1,84 @@
+{
+  "id": "multi-agent",
+  "name": "多智能体",
+  "nameEn": "Multi-Agent",
+  "abbreviation": "Multi-Agent",
+  "category": "tool",
+  "difficulty": 5,
+  "tags": ["tool", "advanced", "collaboration"],
+  "level": 2,
+  "tooltip": {
+    "summary": "多个AI智能体协作解决问题的架构，模拟团队分工合作"
+  },
+  "detail": {
+    "definition": "多智能体系统(Multi-Agent System)是由多个AI智能体协同工作来解决复杂问题的架构。每个Agent扮演特定角色(如产品经理、程序员、测试员)，拥有专门的工具和知识，通过协作、讨论和任务分配来完成单个Agent难以完成的复杂任务。这种架构模拟了人类团队协作模式，能够处理更复杂的业务流程和创意工作。",
+    "plainExplanation": "多智能体就像一支AI团队。不是让一个AI做所有事，而是有专门的AI：一个负责规划、一个负责写作、一个负责检查。它们相互讨论、分工合作，就像人类团队一样。这样每个AI做自己擅长的事，整体效果更好。",
+    "analogy": "就像电影制作团队。导演负责整体把控，编剧写剧本，摄影师负责拍摄，剪辑师后期制作。多智能体系统也是这样：不同AI负责不同环节，通过协作完成复杂项目。",
+    "keyPoints": [
+      "角色分工: 每个Agent有专门的角色和职责",
+      "协作机制: Agent之间可以通信、讨论、委托任务",
+      "任务分解: 复杂任务自动分解为子任务分配给不同Agent",
+      "冲突解决: 处理Agent之间的意见分歧",
+      "工作流编排: 支持顺序、并行、条件分支等流程"
+    ],
+    "useCases": [
+      {
+        "title": "软件开发",
+        "description": "产品经理、架构师、程序员、测试员Agent协作开发",
+        "example": "MetaGPT: 多个Agent协作完成从需求到代码的完整开发流程"
+      },
+      {
+        "title": "内容创作",
+        "description": "策划、写作、编辑、设计Agent协作创作",
+        "example": "研究Agent收集资料→写作Agent撰写→编辑Agent润色→设计Agent配图"
+      },
+      {
+        "title": "商业分析",
+        "description": "数据分析师、行业专家、策略师Agent协作",
+        "example": "分析市场趋势：数据Agent处理数据→行业Agent提供洞察→策略Agent制定方案"
+      },
+      {
+        "title": "客户服务",
+        "description": "前台、技术支持、售后Agent协作服务客户",
+        "example": "根据问题类型自动转接给最合适的Agent处理"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "agent",
+        "relationType": "extends",
+        "relationLabel": "扩展"
+      },
+      {
+        "conceptId": "llm",
+        "relationType": "powered-by",
+        "relationLabel": "驱动"
+      }
+    ],
+    "resources": [
+      {
+        "title": "MetaGPT: Meta Programming for Multi-Agent Collaborative Framework",
+        "url": "https://arxiv.org/abs/2308.00352",
+        "type": "paper",
+        "language": "en",
+        "difficulty": "advanced",
+        "recommended": true
+      },
+      {
+        "title": "AutoGen: Multi-Agent Conversation Framework",
+        "url": "https://github.com/microsoft/autogen",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}

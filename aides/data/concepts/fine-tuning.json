@@ -1,0 +1,84 @@
+{
+  "id": "fine-tuning",
+  "name": "微调",
+  "nameEn": "Fine-tuning",
+  "abbreviation": "Fine-tuning",
+  "category": "tech",
+  "difficulty": 3,
+  "tags": ["tech", "training", "optimization"],
+  "level": 1,
+  "tooltip": {
+    "summary": "在预训练模型基础上，用特定数据进一步训练以提升特定任务表现"
+  },
+  "detail": {
+    "definition": "微调(Fine-tuning)是在预训练好的大语言模型基础上，使用特定领域或任务的数据进行进一步训练的技术。通过微调，模型可以学习特定领域的知识、术语和风格，从而在特定任务上表现更好。相比从头训练，微调成本低、效果好，是定制AI模型的主流方法。",
+    "plainExplanation": "想象预训练模型是一个大学毕业的通才，微调就是让他参加职业培训。比如一个通用LLM经过医疗数据微调后，就能像专业医生一样回答医学问题；经过法律数据微调后，就能像律师一样理解法律条文。",
+    "analogy": "微调就像给通用厨师进行专项培训。一个会做各种菜的基础厨师，经过川菜培训后，就能做出地道的麻婆豆腐和宫保鸡丁。微调让"通才"变成"专家"。",
+    "keyPoints": [
+      "基于预训练模型，用较少数据(几千到几万条)进行训练",
+      "训练成本远低于预训练，通常只需几小时到几天",
+      "可提升特定领域的准确性和专业性",
+      "支持全参数微调或高效微调(LoRA、QLoRA)",
+      "需要准备高质量的标注数据"
+    ],
+    "useCases": [
+      {
+        "title": "领域专用模型",
+        "description": "针对医疗、法律、金融等专业领域微调",
+        "example": "某医院用10万份病历微调模型，辅助医生诊断，准确率达95%"
+      },
+      {
+        "title": "品牌风格适配",
+        "description": "让模型学习特定品牌的语言风格",
+        "example": "电商平台微调模型生成符合品牌调性的商品描述"
+      },
+      {
+        "title": "代码辅助",
+        "description": "针对特定编程语言或框架微调",
+        "example": "用公司内部代码库微调，生成符合编码规范的代码"
+      },
+      {
+        "title": "多语言优化",
+        "description": "提升模型对特定语言的理解和生成能力",
+        "example": "用大量中文古文数据微调，提升文言文翻译能力"
+      }
+    ],
+    "relatedConcepts": [
+      {
+        "conceptId": "llm",
+        "relationType": "improves",
+        "relationLabel": "改进"
+      },
+      {
+        "conceptId": "prompt-engineering",
+        "relationType": "alternative",
+        "relationLabel": "替代方案"
+      }
+    ],
+    "resources": [
+      {
+        "title": "OpenAI Fine-tuning指南",
+        "url": "https://platform.openai.com/docs/guides/fine-tuning",
+        "type": "documentation",
+        "language": "en",
+        "difficulty": "intermediate",
+        "recommended": true
+      },
+      {
+        "title": "LoRA: Low-Rank Adaptation论文",
+        "url": "https://arxiv.org/abs/2106.09685",
+        "type": "paper",
+        "language": "en",
+        "difficulty": "advanced",
+        "recommended": false
+      }
+    ]
+  },
+  "metadata": {
+    "version": 1,
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "author": "AI-Aides Team",
+    "status": "published"
+  }
+}
