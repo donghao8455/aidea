@@ -558,6 +558,264 @@ const conceptMap: Record<string, ConceptDetail> = {
       ],
     },
   },
+  reasoning: {
+    id: 'reasoning',
+    name: '推理模型',
+    nameEn: 'Reasoning Model',
+    abbreviation: 'Reasoning',
+    category: 'tech',
+    difficulty: 4,
+    tags: ['tech', 'reasoning', '2025', 'advanced'],
+    tooltip: {summary: '具备"慢思考"能力的AI模型，通过内化的思维链进行复杂推理和验证'},
+    detail: {
+      definition: '推理模型(Reasoning Model)是2025年崛起的AI模型新类别，具备内化的"慢思考"(System 2 Thinking)能力。这类模型在输出最终答案前，会先在隐藏空间中进行长链条的逻辑推演、自我反思与路径规划。代表模型包括OpenAI o1/o3、DeepSeek R1、Google Gemini 3等。',
+      plainExplanation: '普通AI像"直觉反应"，看到问题直接给答案。推理模型像"深思熟虑"，会先在脑子里推演几步、检查有没有漏洞，然后才给出最终答案。就像数学考试时，不会看到题就写答案，而是会先分析题目、列步骤、验算。',
+      analogy: '就像人类中的"直觉型"vs"分析型"。直觉型反应快但容易出错，分析型反应慢但更可靠。推理模型就是AI中的"分析型"——它愿意花更多时间思考，以确保答案正确。',
+      keyPoints: [
+        '内化思维链：CoT能力成为模型内置能力，而非外部提示',
+        '测试时算力扩展：可通过增加思考时间换取更好结果',
+        'RLVR驱动：基于可验证奖励的强化学习训练',
+        '自我验证：能检验答案正确性并自我修正',
+        '复杂任务专精：数学、代码、逻辑推理能力显著提升',
+      ],
+      useCases: [
+        {title: '数学问题求解', description: '处理复杂数学证明和计算', example: '奥数题、高等数学推导、公式证明'},
+        {title: '代码生成与调试', description: '生成高质量代码并自我调试', example: 'SWE-bench测试中o3得分69%，能自动修复Bug'},
+        {title: '复杂决策分析', description: '多步骤逻辑推理和方案评估', example: '商业策略分析、风险评估、多方案比较'},
+        {title: '科学问题研究', description: '辅助科研假设验证和实验设计', example: '药物分子设计、物理问题求解'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'llm', relationType: 'extends', relationLabel: '扩展'},
+        {conceptId: 'chain-of-thought', relationType: 'internalizes', relationLabel: '内化'},
+        {conceptId: 'rlvr', relationType: 'powered-by', relationLabel: '驱动'},
+        {conceptId: 'test-time-compute', relationType: 'uses', relationLabel: '使用'},
+      ],
+      resources: [
+        {title: 'DeepSeek-R1论文', url: 'https://arxiv.org/abs/2501.12948', type: 'paper', language: 'en', difficulty: 'intermediate', recommended: true},
+        {title: 'OpenAI o1技术解析', url: 'https://openai.com/index/openai-o1/', type: 'documentation', language: 'en', difficulty: 'beginner', recommended: true},
+      ],
+    },
+  },
+  rlvr: {
+    id: 'rlvr',
+    name: '可验证奖励强化学习',
+    nameEn: 'RLVR',
+    abbreviation: 'RLVR',
+    category: 'tech',
+    difficulty: 5,
+    tags: ['tech', 'training', '2025', 'advanced'],
+    tooltip: {summary: '基于客观可验证结果进行奖励的强化学习方法，驱动2025年推理模型突破'},
+    detail: {
+      definition: 'RLVR(Reinforcement Learning from Verifiable Rewards)是基于可验证奖励的强化学习方法。与RLHF依赖人类主观打分不同，RLVR利用客观、可自动验证的结果(如代码能否运行、数学答案是否正确)作为奖励信号。这使得模型能在没有人类干预的情况下，通过数百万次试错自我进化出复杂推理能力。',
+      plainExplanation: '传统RLHF像老师打分，但老师可能判断不准确。RLVR像考试阅卷，答案对错一目了然。模型做对了就奖励，做错了就惩罚，完全客观。',
+      analogy: '就像学习下棋：传统方法是看教练的脸色调整策略，RLVR方法是直接看棋局输赢。赢了就强化这步棋，输了就避免这种走法。完全靠结果说话，不需要人解释为什么。',
+      keyPoints: [
+        '客观奖励：答案正确性可自动验证，无需人工标注',
+        '自我博弈：模型通过与环境交互自主探索策略',
+        '无需人类干预：训练过程高度自动化',
+        '涌现推理能力：RLVR训练中自发产生类似"思考"的策略',
+        '高效率：每美元算力产出更高的能力提升',
+      ],
+      useCases: [
+        {title: '推理模型训练', description: '训练具备深度推理能力的AI模型', example: 'DeepSeek R1、OpenAI o1/o3的训练基础'},
+        {title: '代码生成优化', description: '让模型学会生成可运行的代码', example: '通过代码编译和测试结果作为奖励信号'},
+        {title: '数学问题求解', description: '提升模型解决数学问题的能力', example: '用答案正确性作为奖励，训练数学推理模型'},
+        {title: '游戏AI训练', description: '训练能在复杂游戏中获胜的AI', example: '围棋、星际争霸等策略游戏AI'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'llm', relationType: 'trains', relationLabel: '训练'},
+        {conceptId: 'reasoning', relationType: 'enables', relationLabel: '赋能'},
+      ],
+      resources: [
+        {title: 'DeepSeek-R1论文', url: 'https://arxiv.org/abs/2501.12948', type: 'paper', language: 'en', difficulty: 'advanced', recommended: true},
+        {title: 'Karpathy 2025 LLM Year in Review', url: 'https://karpathy.bearblog.dev/year-in-review-2025/', type: 'article', language: 'en', difficulty: 'intermediate', recommended: true},
+      ],
+    },
+  },
+  'test-time-compute': {
+    id: 'test-time-compute',
+    name: '测试时算力扩展',
+    nameEn: 'Test-time Compute',
+    abbreviation: 'TTC',
+    category: 'tech',
+    difficulty: 4,
+    tags: ['tech', 'scaling', '2025', 'advanced'],
+    tooltip: {summary: '通过在推理时消耗更多计算资源来提升模型输出质量的技术范式'},
+    detail: {
+      definition: '测试时算力扩展(Test-time Compute Scaling)是一种通过在模型推理时增加计算量来提升输出质量的技术范式。与传统的预训练扩展不同，TTC允许模型在"思考"时消耗更多token和计算资源。在复杂任务上可通过延长思考时间获得显著更好的结果。',
+      plainExplanation: '传统模型"想都不想就答"，推理模型会"多想一会儿再答"。TTC就是让AI有更多时间思考——就像考试时给你更多时间，你能答得更好一样。',
+      analogy: '就像解题时，你可以选择快速心算，也可以选择草稿纸一步步演算。选择演算法消耗更多时间，但准确率更高。TTC就是让AI选择"演算"而不是"心算"。',
+      keyPoints: [
+        '推理时扩展：不同于预训练扩展，在推理阶段增加计算',
+        '自适应思考时间：简单问题快速答，复杂问题深思熟虑',
+        '质量换时间：用更多思考时间换取更高准确率',
+        'Token消耗增加：推理成本高于传统模型',
+        'SWE-bench收益：在编程任务上TTC效果显著',
+      ],
+      useCases: [
+        {title: '复杂代码生成', description: '需要多步骤推理的编程任务', example: '完整项目代码生成、自动Bug修复'},
+        {title: '数学证明', description: '需要多步推导的数学问题', example: '奥数题、高等数学、公式推导'},
+        {title: '战略决策', description: '需要权衡多种因素的复杂决策', example: '商业策略、投资分析、风险评估'},
+        {title: '多轮规划', description: '需要分解和规划的多步骤任务', example: '旅行规划、项目管理、复杂任务执行'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'reasoning', relationType: 'enables', relationLabel: '实现'},
+        {conceptId: 'llm', relationType: 'extends', relationLabel: '扩展'},
+        {conceptId: 'chain-of-thought', relationType: 'extends', relationLabel: '扩展'},
+      ],
+      resources: [
+        {title: 'Nvidia: LLM Reasoning and Test-time Scaling', url: 'https://developer.nvidia.com/blog/an-easy-introduction-to-llm-reasoning-ai-agents-and-test-time-scaling/', type: 'article', language: 'en', difficulty: 'intermediate', recommended: true},
+      ],
+    },
+  },
+  react: {
+    id: 'react',
+    name: '推理行动模式',
+    nameEn: 'ReAct',
+    abbreviation: 'ReAct',
+    category: 'methodology',
+    difficulty: 3,
+    tags: ['methodology', 'agent', 'reasoning', 'foundational'],
+    tooltip: {summary: '让AI交替进行推理和行动的智能体架构模式'},
+    detail: {
+      definition: 'ReAct(Reasoning and Acting)是一种让AI模型交替进行推理和行动的智能体架构模式。在ReAct循环中，模型先"思考"决定下一步行动，然后"执行"该行动，再根据执行结果进行下一轮推理。这种"边想边做、做了再想"的模式使智能体能更好地处理复杂任务。',
+      plainExplanation: 'ReAct就是让AI"想一步做一步"。不是一次性想完所有步骤再做，而是想一步、做一步、看看结果、再想下一步。就像你到了一个陌生城市，边走边问边看地图，而不是一次性看完地图再出发。',
+      analogy: '就像做实验：先提出假设(推理)，然后做实验(行动)，根据实验结果修正假设(推理)，再做更多实验(行动)。科学发现就是这样一步步推进的，ReAct让AI也具备这种迭代能力。',
+      keyPoints: [
+        '交替循环：推理→行动→观察→推理→...',
+        '外部反馈：行动结果作为下一步推理的输入',
+        '动态规划：根据执行情况调整后续计划',
+        '错误恢复：发现错误时可回退和修正',
+        '透明可解释：能展示思考过程和行动理由',
+      ],
+      useCases: [
+        {title: '智能客服', description: '多轮对话中逐步理解和解决用户问题', example: '电商客服：查询订单→确认信息→处理退款→发送确认'},
+        {title: '自动化办公', description: '按步骤执行复杂业务流程', example: '报销流程：收集发票→验证发票→提交审批→通知结果'},
+        {title: '数据分析Agent', description: '交互式数据探索和分析', example: '查询数据→发现问题→深入分析→生成报告'},
+        {title: '研究助手', description: '分步骤进行文献检索和总结', example: '搜索论文→筛选相关→阅读摘要→深入阅读→整理笔记'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'agent', relationType: 'implements', relationLabel: '实现'},
+        {conceptId: 'chain-of-thought', relationType: 'extends', relationLabel: '扩展'},
+        {conceptId: 'tool-calling', relationType: 'uses', relationLabel: '使用'},
+      ],
+      resources: [
+        {title: 'ReAct论文', url: 'https://arxiv.org/abs/2210.03629', type: 'paper', language: 'en', difficulty: 'intermediate', recommended: true},
+      ],
+    },
+  },
+  'vibe-coding': {
+    id: 'vibe-coding',
+    name: '氛围编程',
+    nameEn: 'Vibe Coding',
+    abbreviation: 'VC',
+    category: 'methodology',
+    difficulty: 2,
+    tags: ['methodology', 'coding', '2025', 'trending'],
+    tooltip: {summary: '2025年新兴的AI辅助编程范式，开发者用自然语言描述意图，AI完成代码实现'},
+    detail: {
+      definition: 'Vibe Coding是2025年随Claude Code、Google Jules等AI编程工具兴起的新编程范式。开发者不再直接编写代码，而是用自然语言描述想要的功能和"感觉"，由AI理解意图后生成代码。开发者扮演"产品经理+架构师"的角色，把控方向而非细节。',
+      plainExplanation: '以前写代码是"我要一行行敲代码"，Vibe Coding是"我说话，AI帮我写代码"。就像跟一个懂编程的助手说"帮我做一个登录页面，要简洁好看"，助手就帮你做好了。',
+      analogy: '就像导演和编剧的关系：导演不用自己写剧本，只需要跟编剧描述"我要什么感觉、什么氛围"，编剧来完成具体台词。Vibe Coding中，开发者是导演，AI是编剧。',
+      keyPoints: [
+        '意图驱动：用自然语言描述而非代码指令',
+        'AI代笔：代码由AI生成，开发者审核修改',
+        '快速原型：能快速验证想法和方向',
+        '角色转变：从"码农"变成"AI管理者"',
+        '仍需验收：开发者负责确保代码质量',
+      ],
+      useCases: [
+        {title: '快速原型开发', description: '快速将想法转化为可运行的代码', example: '创业公司用Vibe Coding快速验证MVP'},
+        {title: '前端开发', description: '用描述性语言构建UI界面', example: '"要一个现代感的仪表盘，包含图表和表格"'},
+        {title: '代码重构', description: '用自然语言描述重构目标', example: '"把这个函数改成更易读的版本"'},
+        {title: '学习辅助', description: '通过描述想要的功能学习编程', example: '初学者通过AI生成的代码学习编程'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'agent', relationType: 'powers', relationLabel: '驱动'},
+        {conceptId: 'llm', relationType: 'uses', relationLabel: '使用'},
+        {conceptId: 'computer-use', relationType: 'extends', relationLabel: '扩展'},
+      ],
+      resources: [
+        {title: 'Claude Code官方文档', url: 'https://docs.anthropic.com/en/docs/claude-code', type: 'documentation', language: 'en', difficulty: 'beginner', recommended: true},
+      ],
+    },
+  },
+  'computer-use': {
+    id: 'computer-use',
+    name: '计算机使用智能体',
+    nameEn: 'Computer-Using Agent',
+    abbreviation: 'CUA',
+    category: 'architecture',
+    difficulty: 5,
+    tags: ['architecture', 'agent', '2025', 'advanced', 'frontier'],
+    tooltip: {summary: '能像人类一样操作电脑界面完成复杂任务的AI智能体'},
+    detail: {
+      definition: '计算机使用智能体(Computer-Using Agent, CUA)是一种能像人类一样操作电脑界面的AI智能体。CUA能理解屏幕内容、操作鼠标键盘、填写表单、浏览网页，完成从简单点击到复杂多步骤的工作流。OpenAI的CUA和Anthropic的Claude Computer Use都代表了2025年Agent能力的重大突破。',
+      plainExplanation: '普通AI只能"看"和"说"，CUA能"看"、"说"、"做"——它能像人一样操作电脑。打开浏览器、点击按钮、填写表格、拖拽文件，它都能做。',
+      analogy: '就像给AI装上了一双"机械手"和"眼睛"。以前AI只能通过API跟系统交互，现在能直接操作任何有图形界面的软件。就像从"只能指挥别人干活"变成"自己也能干活"。',
+      keyPoints: [
+        '视觉理解：理解屏幕上的UI元素和布局',
+        '操作执行：模拟鼠标点击、键盘输入等操作',
+        '多软件协同：能操作多种不同类型的软件',
+        '端到端任务：从自然语言指令到完整操作流程',
+        '安全边界：需要防止误操作和恶意指令',
+      ],
+      useCases: [
+        {title: '自动化测试', description: 'AI自动执行端到端测试', example: 'AI自动打开网页、填写表单、验证结果'},
+        {title: '数据录入', description: '自动将数据录入各种系统', example: '从PDF提取信息填入Excel或数据库'},
+        {title: '网页研究', description: '自动浏览网页收集和分析信息', example: 'AI自动搜索产品、比较价格、生成报告'},
+        {title: '办公自动化', description: '自动化处理日常办公任务', example: '自动处理邮件、整理文件、生成报表'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'agent', relationType: 'extends', relationLabel: '扩展'},
+        {conceptId: 'vibe-coding', relationType: 'extends', relationLabel: '扩展'},
+        {conceptId: 'mcp', relationType: 'uses', relationLabel: '使用'},
+        {conceptId: 'tool-calling', relationType: 'extends', relationLabel: '扩展'},
+      ],
+      resources: [
+        {title: 'OpenAI Computer-Using Agent', url: 'https://platform.openai.com/docs/guides/computer-use', type: 'documentation', language: 'en', difficulty: 'intermediate', recommended: true},
+        {title: 'Claude Computer Use', url: 'https://docs.anthropic.com/en/docs/claude-agent-computer-use', type: 'documentation', language: 'en', difficulty: 'intermediate', recommended: true},
+      ],
+    },
+  },
+  'agentic-ai': {
+    id: 'agentic-ai',
+    name: '代理式AI',
+    nameEn: 'Agentic AI',
+    abbreviation: 'Agentic AI',
+    category: 'architecture',
+    difficulty: 3,
+    tags: ['architecture', 'agent', '2025', 'trend'],
+    tooltip: {summary: '具备自主规划、工具使用和多步执行能力的AI系统范式'},
+    detail: {
+      definition: '代理式AI(Agentic AI)是2025年AI发展的核心范式，指具备自主规划、工具使用和多步执行能力的AI系统。与传统的问答式AI不同，Agentic AI能理解长期目标、分解任务、调用工具、适应环境变化，完成从"给指令"到"给目标"的转变。',
+      plainExplanation: '普通AI是"工具"——你问什么它答什么。Agentic AI是"员工"——你给它目标，它自己想办法完成。就像工具和员工的区别：工具需要你操作，员工只需要你告诉它目标。',
+      analogy: '就像从"用计算器"到"雇会计"的区别。计算器需要你一步步操作，会计只需要你告诉它"帮我算一下今年的财务报表"，它自己会完成所有步骤。',
+      keyPoints: [
+        '目标导向：理解高层目标而非执行单次指令',
+        '自主规划：将复杂目标分解为可执行步骤',
+        '工具使用：调用API、搜索信息、执行操作',
+        '适应能力：能处理意外情况和环境变化',
+        '长期记忆：维护跨会话的上下文和知识',
+      ],
+      useCases: [
+        {title: '智能研究助手', description: '自主完成复杂研究任务', example: 'AI自动搜索文献、分析数据、生成报告'},
+        {title: '自动化业务流程', description: '端到端自动化复杂业务流程', example: '从订单处理到客户服务的全流程自动化'},
+        {title: '代码开发团队', description: 'AI程序员组成的开发团队', example: 'Devin、Claude Code等AI开发者协作完成项目'},
+        {title: '个人AI助手', description: '能代替用户执行多步骤任务', example: '"帮我安排下周去上海的出差"→AI自动完成所有预订'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'agent', relationType: 'is', relationLabel: '是'},
+        {conceptId: 'llm', relationType: 'powered-by', relationLabel: '驱动'},
+        {conceptId: 'reasoning', relationType: 'uses', relationLabel: '使用'},
+        {conceptId: 'mcp', relationType: 'connects-via', relationLabel: '通过MCP连接'},
+      ],
+      resources: [
+        {title: 'Nvidia: What is Agentic AI', url: 'https://blogs.nvidia.com/blog/what-is-agentic-ai/', type: 'article', language: 'en', difficulty: 'beginner', recommended: true},
+        {title: 'McKinsey 2025 AI State Report', url: 'https://www.mckinsey.com/industries/technology/our-insights/the-state-of-ai', type: 'report', language: 'en', difficulty: 'intermediate', recommended: true},
+      ],
+    },
+  },
 };
 
 /* ============================================================
@@ -570,6 +828,8 @@ export const conceptOrder = [
   'prompt-engineering', 'chain-of-thought',
   'rag', 'agent', 'ai-gateway',
   'mcp', 'tool-calling', 'multi-agent',
+  'reasoning', 'rlvr', 'test-time-compute',
+  'react', 'vibe-coding', 'computer-use', 'agentic-ai',
 ];
 
 /* ============================================================
@@ -618,6 +878,42 @@ export const relations: RelationData[] = [
   // Chain of Thought
   {source: 'chain-of-thought', target: 'llm', label: '增强'},
   {source: 'chain-of-thought', target: 'agent', label: '用于'},
+
+  // 2025 New Concepts - Reasoning
+  {source: 'llm', target: 'reasoning', label: '扩展'},
+  {source: 'reasoning', target: 'chain-of-thought', label: '内化'},
+  {source: 'reasoning', target: 'rlvr', label: '驱动'},
+  {source: 'reasoning', target: 'test-time-compute', label: '使用'},
+
+  // RLVR
+  {source: 'rlvr', target: 'llm', label: '训练'},
+
+  // Test-time Compute
+  {source: 'test-time-compute', target: 'llm', label: '扩展'},
+
+  // ReAct
+  {source: 'agent', target: 'react', label: '实现'},
+  {source: 'react', target: 'tool-calling', label: '使用'},
+  {source: 'react', target: 'chain-of-thought', label: '扩展'},
+
+  // Agentic AI
+  {source: 'agent', target: 'agentic-ai', label: '是'},
+  {source: 'agentic-ai', target: 'llm', label: '驱动'},
+  {source: 'agentic-ai', target: 'reasoning', label: '使用'},
+  {source: 'agentic-ai', target: 'mcp', label: '通过MCP连接'},
+
+  // Computer Use
+  {source: 'agent', target: 'computer-use', label: '扩展'},
+  {source: 'computer-use', target: 'mcp', label: '使用'},
+  {source: 'computer-use', target: 'tool-calling', label: '扩展'},
+
+  // Vibe Coding
+  {source: 'vibe-coding', target: 'agent', label: '驱动'},
+  {source: 'vibe-coding', target: 'llm', label: '使用'},
+  {source: 'vibe-coding', target: 'computer-use', label: '扩展'},
+
+  // Multi-Agent uses ReAct
+  {source: 'multi-agent', target: 'react', label: '使用'},
 ];
 
 /* ============================================================

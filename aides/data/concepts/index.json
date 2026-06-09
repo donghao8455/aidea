@@ -149,6 +149,76 @@
       "difficulty": 5,
       "level": 2,
       "summary": "多个AI智能体协作解决问题的架构，模拟团队分工合作"
+    },
+    {
+      "id": "reasoning",
+      "name": "推理模型",
+      "nameEn": "Reasoning Model",
+      "abbreviation": "Reasoning",
+      "category": "tech",
+      "difficulty": 4,
+      "level": 1,
+      "summary": "具备"慢思考"能力的AI模型，通过内化的思维链进行复杂推理和验证"
+    },
+    {
+      "id": "rlvr",
+      "name": "可验证奖励强化学习",
+      "nameEn": "RLVR",
+      "abbreviation": "RLVR",
+      "category": "tech",
+      "difficulty": 5,
+      "level": 2,
+      "summary": "基于客观可验证结果进行奖励的强化学习方法，驱动2025年推理模型突破"
+    },
+    {
+      "id": "test-time-compute",
+      "name": "测试时算力扩展",
+      "nameEn": "Test-time Compute",
+      "abbreviation": "TTC",
+      "category": "tech",
+      "difficulty": 4,
+      "level": 1,
+      "summary": "通过在推理时消耗更多计算资源来提升模型输出质量的技术范式"
+    },
+    {
+      "id": "react",
+      "name": "推理行动模式",
+      "nameEn": "ReAct",
+      "abbreviation": "ReAct",
+      "category": "methodology",
+      "difficulty": 3,
+      "level": 1,
+      "summary": "让AI交替进行推理和行动的智能体架构模式"
+    },
+    {
+      "id": "vibe-coding",
+      "name": "氛围编程",
+      "nameEn": "Vibe Coding",
+      "abbreviation": "VC",
+      "category": "methodology",
+      "difficulty": 2,
+      "level": 1,
+      "summary": "2025年新兴的AI辅助编程范式，用自然语言描述意图让AI生成代码"
+    },
+    {
+      "id": "computer-use",
+      "name": "计算机使用智能体",
+      "nameEn": "Computer-Using Agent",
+      "abbreviation": "CUA",
+      "category": "architecture",
+      "difficulty": 5,
+      "level": 2,
+      "summary": "能像人类一样操作电脑界面完成复杂任务的AI智能体"
+    },
+    {
+      "id": "agentic-ai",
+      "name": "代理式AI",
+      "nameEn": "Agentic AI",
+      "abbreviation": "Agentic AI",
+      "category": "architecture",
+      "difficulty": 3,
+      "level": 1,
+      "summary": "具备自主规划、工具使用和多步执行能力的AI系统范式"
     }
   ]
 }

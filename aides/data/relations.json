@@ -153,6 +153,139 @@
       "target": "agent",
       "type": "used-by",
       "label": "被使用"
+    },
+    {
+      "id": "rel-023",
+      "source": "llm",
+      "target": "reasoning",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-024",
+      "source": "reasoning",
+      "target": "chain-of-thought",
+      "type": "internalizes",
+      "label": "内化"
+    },
+    {
+      "id": "rel-025",
+      "source": "reasoning",
+      "target": "rlvr",
+      "type": "powered-by",
+      "label": "驱动"
+    },
+    {
+      "id": "rel-026",
+      "source": "reasoning",
+      "target": "test-time-compute",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-027",
+      "source": "rlvr",
+      "target": "llm",
+      "type": "trains",
+      "label": "训练"
+    },
+    {
+      "id": "rel-028",
+      "source": "agent",
+      "target": "react",
+      "type": "implements",
+      "label": "实现"
+    },
+    {
+      "id": "rel-029",
+      "source": "react",
+      "target": "tool-calling",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-030",
+      "source": "react",
+      "target": "chain-of-thought",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-031",
+      "source": "agent",
+      "target": "agentic-ai",
+      "type": "is",
+      "label": "是"
+    },
+    {
+      "id": "rel-032",
+      "source": "agentic-ai",
+      "target": "llm",
+      "type": "powered-by",
+      "label": "驱动"
+    },
+    {
+      "id": "rel-033",
+      "source": "agentic-ai",
+      "target": "reasoning",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-034",
+      "source": "agentic-ai",
+      "target": "mcp",
+      "type": "connects-via",
+      "label": "通过MCP连接"
+    },
+    {
+      "id": "rel-035",
+      "source": "agent",
+      "target": "computer-use",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-036",
+      "source": "computer-use",
+      "target": "mcp",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-037",
+      "source": "vibe-coding",
+      "target": "agent",
+      "type": "powers",
+      "label": "驱动"
+    },
+    {
+      "id": "rel-038",
+      "source": "vibe-coding",
+      "target": "llm",
+      "type": "uses",
+      "label": "使用"
+    },
+    {
+      "id": "rel-039",
+      "source": "vibe-coding",
+      "target": "computer-use",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-040",
+      "source": "test-time-compute",
+      "target": "chain-of-thought",
+      "type": "extends",
+      "label": "扩展"
+    },
+    {
+      "id": "rel-041",
+      "source": "multi-agent",
+      "target": "react",
+      "type": "uses",
+      "label": "使用"
     }
   ]
 }
