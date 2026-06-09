@@ -56,7 +56,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       const graph = new Graph({
         container: containerRef.current!,
         width: 1400,
-        height: 800,
+        height: 1000,
         background: {
           color: '#f8fafc',
         },
@@ -139,7 +139,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
         });
       });
 
-      // 添加所有边
+      // 添加所有边 - 使用贝塞尔曲线边，避免重叠，降低层级
       relations.forEach(relation => {
         const sourcePos = positions[relation.source];
         const targetPos = positions[relation.target];
@@ -149,33 +149,34 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           id: `edge-${relation.source}-${relation.target}`,
           source: relation.source,
           target: relation.target,
+          // 设置边的连接桩，从节点边缘连接
+          sourcePort: 'outer',
+          targetPort: 'outer',
           labels: [
             {
               attrs: {
                 labelText: {
                   text: relation.label,
                   fill: '#64748b',
-                  fontSize: 11,
+                  fontSize: 10,
+                  fontWeight: 500,
                 },
               },
+              position: 0.5,
             },
           ],
           attrs: {
             line: {
-              stroke: '#94a3b8',
-              strokeWidth: 2,
+              stroke: 'rgba(148, 163, 184, 0.5)',
+              strokeWidth: 1.5,
               targetMarker: {
                 name: 'classic',
-                size: 6,
+                size: 5,
               },
             },
           },
-          router: {
-            name: 'manhattan',
-            args: {
-              padding: 30,
-            },
-          },
+          // 使用默认的贝塞尔曲线
+          zIndex: -1, // 让边在节点之下
         });
       });
 
@@ -389,7 +390,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   }, [selectedCategory, searchQuery]);
 
   // ============================================================
-  // 布局算法
+  // 布局算法 - 增加间距，减少边重叠
   // ============================================================
   const layoutConcepts = (nodes: ConceptData[]) => {
     const categoryNodes: Record<string, ConceptData[]> = {};
@@ -402,20 +403,23 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
     });
 
     const positions: Record<string, {x: number; y: number}> = {};
+    // 增加行间距，减少边重叠
     const categoryY: Record<string, number> = {
-      basic: 80,
-      tech: 220,
-      methodology: 360,
-      architecture: 500,
-      tool: 640,
+      basic: 100,
+      tech: 280,
+      methodology: 460,
+      architecture: 640,
+      tool: 820,
     };
+    // 增加列间距
+    const colSpacing = 220;
 
     categoryOrder.forEach(cat => {
       const catNodes = categoryNodes[cat] || [];
-      const startX = (1400 - (catNodes.length - 1) * 180) / 2;
+      const startX = (1400 - (catNodes.length - 1) * colSpacing) / 2;
       catNodes.forEach((node, idx) => {
         positions[node.id] = {
-          x: startX + idx * 180,
+          x: startX + idx * colSpacing,
           y: categoryY[cat],
         };
       });
