@@ -1,106 +1,273 @@
-import {useState} from 'react';
-import {aiNewsData, type AINewsItem, type NewsTab, tabLabels} from '@site/src/data/aiNews';
-import styles from './styles.module.css';
+import {useState, useEffect} from 'react';
 
-const categoryColors: Record<string, string> = {
+/**
+ * AI 新动态侧边栏
+ *
+ * Props 驱动：items 由父组件传入（从 /data/ai-news.json 拉取或 mock fallback）
+ * 5 大分类筛选 + 手风琴展开 + 第 1 条默认展开 + 更新时间显示
+ */
+
+export interface AINewsItem {
+  id: string | number;
+  title: string;
+  summary?: string;
+  source: string;
+  sourceIcon?: string;
+  url?: string;
+  time?: string; // 显示用相对时间（如 "2小时前"）
+  timestamp?: number;
+  tag?: 'hot' | 'new' | 'top';
+  category: 'tech' | 'industry' | 'research' | 'tool';
+  relatedConcepts?: string[];
+  qualityScore?: number;
+}
+
+type CategoryFilter = 'all' | 'tech' | 'industry' | 'research' | 'tool';
+
+const CATEGORY_TABS: {id: CategoryFilter; label: string; color: string}[] = [
+  {id: 'all', label: '全部', color: '#64748B'},
+  {id: 'tech', label: '技术突破', color: '#00D084'},
+  {id: 'industry', label: '行业应用', color: '#0EA5E9'},
+  {id: 'research', label: '学术研究', color: '#F59E0B'},
+  {id: 'tool', label: '工具发布', color: '#EC4899'},
+];
+
+const CATEGORY_COLORS: Record<string, string> = {
   tech: '#00D084',
   industry: '#0EA5E9',
   research: '#F59E0B',
   tool: '#EC4899',
 };
 
-const tagStyle: Record<string, {bg: string; color: string}> = {
-  hot: {bg: '#FEF2F2', color: '#EF4444'},
-  new: {bg: '#EFF6FF', color: '#3B82F6'},
-  top: {bg: '#FEFCE8', color: '#EAB308'},
+const TAG_STYLES: Record<string, {bg: string; color: string; label: string}> = {
+  hot: {bg: '#FEF2F2', color: '#EF4444', label: '热'},
+  new: {bg: '#EFF6FF', color: '#3B82F6', label: '新'},
+  top: {bg: '#FEFCE8', color: '#EAB308', label: '顶'},
 };
 
-function getFilteredNews(tab: NewsTab): AINewsItem[] {
-  if (tab === 'hot') return aiNewsData.filter(item => item.tag === 'hot' || item.tag === 'top');
-  if (tab === 'latest') return [...aiNewsData].sort((a, b) => a.id - b.id);
-  return aiNewsData;
+interface Props {
+  items?: AINewsItem[];
+  loading?: boolean;
+  onNewsClick?: (relatedConcepts: string[]) => void;
 }
 
-function TagBadge({tag}: {tag: 'hot' | 'new' | 'top'}) {
-  const s = tagStyle[tag];
-  return (
-    <span className={styles.tagBadge} style={{background: s.bg, color: s.color}}>
-      {tag === 'hot' ? '热' : tag === 'new' ? '新' : '顶'}
-    </span>
-  );
-}
+export function AINewsSidebar({items = [], loading, onNewsClick}: Props): JSX.Element {
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
+  const [expandedId, setExpandedId] = useState<string | number | null>(null);
+  const [updatedAt, setUpdatedAt] = useState<string>('');
 
-function NewsRow({item, index}: {item: AINewsItem; index: number}) {
-  const rankColor = index < 3 ? '#EF4444' : '#94A3B8';
+  // 初次展开：第 1 条（按当前分类过滤后的）
+  useEffect(() => {
+    const filtered = filterByCategory(items, activeCategory);
+    if (filtered.length > 0 && expandedId === null) {
+      setExpandedId(filtered[0].id);
+    }
+    // 设置"更新于"时间
+    const now = new Date();
+    setUpdatedAt(`${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`);
+  }, [items.length, activeCategory]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <a
-      href="#"
-      className={styles.newsRow}
-      onClick={e => e.preventDefault()}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <span className={styles.rankNum} style={{color: rankColor}}>
-        {index + 1}
-      </span>
-      <span className={styles.newsTitle}>{item.title}</span>
-      {item.tag && <TagBadge tag={item.tag} />}
-    </a>
-  );
-}
+  const filtered = filterByCategory(items, activeCategory).slice(0, 8);
 
-export function AINewsSidebar() {
-  const [activeTab, setActiveTab] = useState<NewsTab>('hot');
-  const filtered = getFilteredNews(activeTab).slice(0, 8);
+  const handleRowClick = (item: AINewsItem, e: React.MouseEvent) => {
+    if (e.type === 'contextmenu' || (e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    // 通知父组件（联动）
+    if (onNewsClick && item.relatedConcepts?.length) {
+      onNewsClick(item.relatedConcepts);
+    }
+    // 展开/收起摘要
+    setExpandedId(prev => (prev === item.id ? null : item.id));
+  };
 
   return (
-    <aside className={styles.sidebar}>
+    <aside style={{
+      background: '#fff',
+      border: '1px solid #e2e8f0',
+      borderRadius: '8px',
+      overflow: 'hidden',
+    }}>
       {/* 头部 */}
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <span className={styles.headerIcon}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
-            </svg>
-          </span>
-          <h3 className={styles.headerTitle}>AI 新动态</h3>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0.75rem 1rem',
+        borderBottom: '1px solid #f1f5f9',
+        background: '#f8fafc',
+      }}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '24px', height: '24px',
+            background: '#5B5FC7',
+            color: 'white',
+            borderRadius: '6px',
+            fontSize: '0.85rem',
+          }}>📡</span>
+          <h3 style={{margin: 0, fontSize: '0.95rem', fontWeight: 600, color: '#213547'}}>AI 新动态</h3>
         </div>
-        <button className={styles.refreshBtn} title="刷新">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-          </svg>
-        </button>
+        <span style={{fontSize: '0.75rem', color: '#64748b'}}>
+          {updatedAt ? `更新于 ${updatedAt}` : loading ? '加载中...' : ''}
+        </span>
       </div>
 
-      {/* Tab 切换 */}
-      <div className={styles.tabs}>
-        {(Object.keys(tabLabels) as NewsTab[]).map(tab => (
+      {/* 5 大分类 Tab */}
+      <div style={{
+        display: 'flex',
+        gap: '0.25rem',
+        padding: '0.5rem 0.5rem 0',
+        overflowX: 'auto',
+      }}>
+        {CATEGORY_TABS.map(tab => (
           <button
-            key={tab}
-            className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tabLabels[tab]}
+            key={tab.id}
+            onClick={() => setActiveCategory(tab.id)}
+            style={{
+              flex: '0 0 auto',
+              padding: '0.3rem 0.6rem',
+              fontSize: '0.75rem',
+              fontWeight: 500,
+              background: activeCategory === tab.id ? tab.color : 'transparent',
+              color: activeCategory === tab.id ? 'white' : tab.color,
+              border: `1px solid ${tab.color}`,
+              borderRadius: '12px',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+            aria-pressed={activeCategory === tab.id}>
+            {tab.label}
           </button>
         ))}
       </div>
 
       {/* 新闻列表 */}
-      <div className={styles.newsList}>
-        {filtered.map((item, idx) => (
-          <NewsRow key={item.id} item={item} index={idx} />
-        ))}
+      <div style={{padding: '0.5rem 0', maxHeight: '600px', overflowY: 'auto'}}>
+        {loading && (
+          <div style={{padding: '2rem 1rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem'}}>
+            加载中...
+          </div>
+        )}
+        {!loading && filtered.length === 0 && (
+          <div style={{padding: '2rem 1rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem'}}>
+            暂无数据
+          </div>
+        )}
+        {!loading && filtered.map((item, idx) => {
+          const isExpanded = expandedId === item.id;
+          const hasUrl = !!item.url;
+          const rankColor = idx < 3 ? '#EF4444' : '#94A3B8';
+          return (
+            <div key={item.id} style={{borderBottom: '1px solid #f1f5f9'}}>
+              <a
+                href={hasUrl ? item.url : '#'}
+                target={hasUrl ? '_blank' : undefined}
+                rel={hasUrl ? 'noopener noreferrer' : undefined}
+                aria-disabled={!hasUrl}
+                aria-label={hasUrl ? `阅读：${item.title}` : `${item.title}（链接不可用）`}
+                onClick={e => handleRowClick(item, e)}
+                style={{
+                  display: 'flex',
+                  gap: '0.5rem',
+                  padding: '0.6rem 0.75rem',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  background: isExpanded ? '#f8fafc' : 'transparent',
+                }}>
+                <span style={{
+                  flex: '0 0 18px',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: rankColor,
+                  textAlign: 'center',
+                }}>{idx + 1}</span>
+                <div style={{flex: 1, minWidth: 0}}>
+                  <div style={{
+                    fontSize: '0.85rem',
+                    fontWeight: idx === 0 ? 600 : 500,
+                    color: '#213547',
+                    lineHeight: 1.4,
+                    display: '-webkit-box',
+                    WebkitLineClamp: isExpanded ? undefined : 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}>{item.title}</div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    fontSize: '0.7rem',
+                    color: '#94a3b8',
+                    marginTop: '2px',
+                  }}>
+                    <span>{item.source}</span>
+                    {item.time && <><span>·</span><span>{item.time}</span></>}
+                    {item.tag && (
+                      <span style={{
+                        background: TAG_STYLES[item.tag].bg,
+                        color: TAG_STYLES[item.tag].color,
+                        padding: '0 4px',
+                        borderRadius: '3px',
+                        fontWeight: 600,
+                      }}>{TAG_STYLES[item.tag].label}</span>
+                    )}
+                  </div>
+                  {/* 摘要展开区域 */}
+                  {isExpanded && item.summary && (
+                    <div style={{
+                      marginTop: '0.4rem',
+                      padding: '0.5rem',
+                      background: '#fff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '4px',
+                      fontSize: '0.8rem',
+                      color: '#475569',
+                      lineHeight: 1.5,
+                    }}>
+                      {item.summary}
+                      {item.relatedConcepts && item.relatedConcepts.length > 0 && (
+                        <div style={{marginTop: '0.4rem', fontSize: '0.7rem', color: '#5B5FC7'}}>
+                          📍 相关概念：{item.relatedConcepts.join(', ')}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </div>
+          );
+        })}
       </div>
 
       {/* 底部 */}
-      <div className={styles.footer}>
-        <a href="#" className={styles.viewAll} onClick={e => e.preventDefault()}>
-          查看全部动态
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      <div style={{
+        padding: '0.5rem 1rem',
+        borderTop: '1px solid #f1f5f9',
+        textAlign: 'center',
+        background: '#f8fafc',
+      }}>
+        <a
+          href="https://www.jiqizhixin.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontSize: '0.8rem',
+            color: '#5B5FC7',
+            textDecoration: 'none',
+            fontWeight: 500,
+          }}>
+          查看全部动态 →
         </a>
       </div>
     </aside>
   );
 }
+
+function filterByCategory(items: AINewsItem[], cat: CategoryFilter): AINewsItem[] {
+  if (cat === 'all') return items;
+  return items.filter(i => i.category === cat);
+}
+
+export default AINewsSidebar;

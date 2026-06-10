@@ -23,6 +23,7 @@ interface GraphCanvasProps {
   selectedCategory?: string | null;
   searchQuery?: string;
   learningPath?: string[]; // 路径概念 ID 有序数组
+  highlightedConcepts?: string[]; // 新闻点击后高亮的概念 ID
 }
 
 export const GraphCanvas: React.FC<GraphCanvasProps> = ({
@@ -30,6 +31,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   selectedCategory,
   searchQuery,
   learningPath,
+  highlightedConcepts,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<X6Graph>(null);
@@ -470,6 +472,63 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       }
     });
   }, [learningPath]);
+
+  // ============================================================
+  // Effect 4: 新闻→图谱联动（脉冲高亮，3 次后恢复）
+  // ============================================================
+  useEffect(() => {
+    const graph = graphRef.current;
+    if (!graph || !highlightedConcepts || highlightedConcepts.length === 0) return;
+
+    const highlightSet = new Set(highlightedConcepts);
+    let pulseCount = 0;
+    const maxPulses = 3;
+
+    const pulse = () => {
+      const nodes = graph.getNodes();
+      nodes.forEach((node: X6Graph) => {
+        const concept: ConceptData = node.getData()?.concept;
+        if (!concept) return;
+        if (highlightSet.has(concept.id)) {
+          const colors = categoryColors[concept.category] || categoryColors.basic;
+          const isPulseOn = pulseCount % 2 === 0;
+          // 脉冲：放大/缩小
+          node.setAttrs({
+            body: {
+              fill: isPulseOn ? colors.border : colors.bg,
+              stroke: colors.border,
+              strokeWidth: isPulseOn ? 4 : 2,
+              opacity: 1,
+            },
+          });
+        }
+      });
+      pulseCount++;
+      if (pulseCount < maxPulses * 2) {
+        setTimeout(pulse, 300);
+      } else {
+        // 恢复默认（让 useEffect 2/3 接管）
+        // 触发一次 searchQuery 引用变化来重置
+        // 简化做法：直接重置所有节点
+        nodes.forEach((node: X6Graph) => {
+          const concept: ConceptData = node.getData()?.concept;
+          if (!concept) return;
+          if (highlightSet.has(concept.id)) {
+            const colors = categoryColors[concept.category] || categoryColors.basic;
+            node.setAttrs({
+              body: {
+                fill: colors.bg,
+                stroke: colors.border,
+                strokeWidth: 2,
+                opacity: 1,
+              },
+            });
+          }
+        });
+      }
+    };
+    pulse();
+  }, [highlightedConcepts]);
 
   // ============================================================
   // 布局算法已移至 ./layoutHierarchical.ts（分层力导向，约束求解避免重叠）

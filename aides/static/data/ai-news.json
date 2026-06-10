@@ -1,0 +1,145 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "OpenAI 发布 GPT-5：多模态推理能力大幅提升",
+      "source": "OpenAI Blog",
+      "sourceIcon": "📰",
+      "time": "2小时前",
+      "timestamp": 0,
+      "tag": "hot",
+      "category": "tech",
+      "relatedConcepts": []
+    },
+    {
+      "id": 2,
+      "title": "Google DeepMind 医疗AI通过FDA临床审批",
+      "source": "TechCrunch",
+      "sourceIcon": "📰",
+      "time": "5小时前",
+      "timestamp": 0,
+      "tag": "new",
+      "category": "industry",
+      "relatedConcepts": []
+    },
+    {
+      "id": 3,
+      "title": "斯坦福提出思维链蒸馏方法：小模型媲美大模型推理能力",
+      "source": "arXiv",
+      "sourceIcon": "📰",
+      "time": "昨天",
+      "timestamp": 0,
+      "tag": null,
+      "category": "research",
+      "relatedConcepts": []
+    },
+    {
+      "id": 4,
+      "title": "Anthropic 发布 Claude Code Agent 自主编程助手",
+      "source": "Anthropic",
+      "sourceIcon": "📰",
+      "time": "昨天",
+      "timestamp": 0,
+      "tag": "hot",
+      "category": "tool",
+      "relatedConcepts": []
+    },
+    {
+      "id": 5,
+      "title": "Meta 开源 LLaMA 4：405B参数对标闭源SOTA",
+      "source": "Meta AI",
+      "sourceIcon": "📰",
+      "time": "2天前",
+      "timestamp": 0,
+      "tag": null,
+      "category": "tech",
+      "relatedConcepts": []
+    },
+    {
+      "id": 6,
+      "title": "特斯拉 FSD V13 端到端神经网络接管率降低90%",
+      "source": "Tesla",
+      "sourceIcon": "📰",
+      "time": "3天前",
+      "timestamp": 0,
+      "tag": null,
+      "category": "industry",
+      "relatedConcepts": []
+    },
+    {
+      "id": 7,
+      "title": "苹果 Siri 全面接入大模型，WWDC26 重磅发布",
+      "source": "Apple Newsroom",
+      "sourceIcon": "📰",
+      "time": "3天前",
+      "timestamp": 0,
+      "tag": "new",
+      "category": "tech",
+      "relatedConcepts": []
+    },
+    {
+      "id": 8,
+      "title": "MIT 研究团队发现 LLM 存在系统性数学幻觉模式",
+      "source": "MIT News",
+      "sourceIcon": "📰",
+      "time": "4天前",
+      "timestamp": 0,
+      "tag": null,
+      "category": "research",
+      "relatedConcepts": []
+    },
+    {
+      "id": 9,
+      "title": "字节跳动 Seedance 2.0 视频生成模型开源",
+      "source": "字节跳动",
+      "sourceIcon": "📰",
+      "time": "4天前",
+      "timestamp": 0,
+      "tag": "hot",
+      "category": "tool",
+      "relatedConcepts": []
+    },
+    {
+      "id": 10,
+      "title": "欧盟 AI 法案正式生效，全球首个全面AI监管法规落地",
+      "source": "EU Commission",
+      "sourceIcon": "📰",
+      "time": "5天前",
+      "timestamp": 0,
+      "tag": "top",
+      "category": "industry",
+      "relatedConcepts": []
+    },
+    {
+      "id": 11,
+      "title": "NVIDIA 发布 B200 Blackwell GPU：AI训练性能翻倍",
+      "source": "NVIDIA Blog",
+      "sourceIcon": "📰",
+      "time": "5天前",
+      "timestamp": 0,
+      "tag": null,
+      "category": "tech",
+      "relatedConcepts": []
+    },
+    {
+      "id": 12,
+      "title": "清华系团队开源 Agent 编排框架 AutoGen v2.0",
+      "source": "GitHub",
+      "sourceIcon": "📰",
+      "time": "1周前",
+      "timestamp": 0,
+      "tag": null,
+      "category": "tool",
+      "relatedConcepts": []
+    }
+  ],
+  "generatedAt": "2026-06-10T00:00:00Z",
+  "source": "initial-mock",
+  "counts": {
+    "total": 12,
+    "hn": 0,
+    "arxiv": 0,
+    "jiqizhixin": 12,
+    "github": 0
+  }
+}

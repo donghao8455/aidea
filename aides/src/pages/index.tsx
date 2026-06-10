@@ -6,6 +6,8 @@ import {GraphCanvas} from '@site/src/components/Graph';
 import {LearningPathSelector} from '@site/src/components/LearningPathSelector';
 import {SearchSuggest} from '@site/src/components/SearchSuggest';
 import {MobileConceptList} from '@site/src/components/MobileConceptList';
+import {AINewsSidebar, type AINewsItem} from '@site/src/components/AINewsSidebar';
+import {aiNewsData} from '@site/src/data/aiNews';
 import {getLearningPath} from '@site/src/data/learningPaths';
 import {concepts, relations} from '@site/src/data/graphData';
 import styles from './index.module.css';
@@ -41,11 +43,37 @@ export default function Home(): ReactNode {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [activePathId, setActivePathId] = useState<string | null>(null);
+  const [highlightedConcepts, setHighlightedConcepts] = useState<string[]>([]);
+  const [newsItems, setNewsItems] = useState<AINewsItem[]>(aiNewsData);
+  const [newsLoading, setNewsLoading] = useState(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const history = useHistory();
 
   const activePath = activePathId ? getLearningPath(activePathId) : null;
   const learningPathIds = activePath?.conceptIds || [];
+
+  // 加载真实新闻（失败 fallback 到 mock）
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/data/ai-news.json')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (cancelled) return;
+        if (data?.items && Array.isArray(data.items) && data.items.length > 0) {
+          setNewsItems(data.items);
+        }
+        // 失败或为空时保留 mock 数据
+      })
+      .catch(() => {/* 网络错误也保留 mock */})
+      .finally(() => { if (!cancelled) setNewsLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleNewsClick = useCallback((relatedConcepts: string[]) => {
+    setHighlightedConcepts(relatedConcepts);
+    // 3 秒后清除高亮
+    setTimeout(() => setHighlightedConcepts([]), 3000);
+  }, []);
 
   // SPA 路由跳转（无白屏刷新）
   const handleNodeClick = useCallback((conceptId: string) => {
@@ -148,19 +176,18 @@ export default function Home(): ReactNode {
             selectedCategory={selectedCategory}
             searchQuery={debouncedQuery}
             learningPath={learningPathIds}
+            highlightedConcepts={highlightedConcepts}
           />
         )}
 
-        {/* 移动端新闻占位（Phase 4 会填充） */}
-        {isMobile && (
-          <div
-            className={styles.newsPlaceholder}
-            data-news-placeholder
-            aria-label="AI 新动态（即将上线）">
-            <h3>📡 AI 新动态</h3>
-            <p>AI 资讯数据采集功能开发中，Phase 4 上线后这里会展示最新 AI 新闻。</p>
-          </div>
-        )}
+        {/* AI 资讯侧边栏（桌面/移动端都显示） */}
+        <div style={{marginTop: '1.5rem'}}>
+          <AINewsSidebar
+            items={newsItems}
+            loading={newsLoading}
+            onNewsClick={handleNewsClick}
+          />
+        </div>
       </main>
     </Layout>
   );

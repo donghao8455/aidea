@@ -32,16 +32,29 @@ jobs:
         working-directory: ./aides
         run: npm run build
 
-      - name: Build Docker image
-        run: |
-          docker build -t aides:${{ github.sha }} -f docker/Dockerfile .
-          docker tag aides:${{ github.sha }} aides:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Save Docker image
-        run: |
-          docker save aides:latest | gzip > aides-image.tar.gz
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy to server
+      - name: Build and push Docker image (GHCR)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/aides:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/aides:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to server (pull GHCR image)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -49,23 +62,24 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           script: |
-            # Stop existing container
+            # 登录 GHCR（使用 GitHub PAT 或部署密钥）
+            echo "${{ secrets.GHCR_DEPLOY_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+            # 拉取新镜像
+            docker pull ghcr.io/${{ github.repository_owner }}/aides:${{ github.sha }}
+
+            # 停止并删除旧容器
             docker stop aides || true
             docker rm aides || true
 
-            # Copy image
-            echo "${{ secrets.DOCKER_IMAGE }}" | base64 -d > aides-image.tar.gz
-            docker load < aides-image.tar.gz
-
-            # Run container
+            # 启动新容器
             docker run -d \
               --name aides \
               --restart unless-stopped \
               -p 80:80 \
-              aides:latest
+              ghcr.io/${{ github.repository_owner }}/aides:${{ github.sha }}
 
-            # Cleanup
-            rm aides-image.tar.gz
+            # 清理旧镜像
             docker image prune -f
 
             echo "Deployment completed successfully!"

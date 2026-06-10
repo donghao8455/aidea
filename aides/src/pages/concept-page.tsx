@@ -1,6 +1,7 @@
 import type {ReactNode} from 'react';
 import {useEffect, useState} from 'react';
 import Link from '@docusaurus/Link';
+import Head from '@docusaurus/Head';
 import Layout from '@theme/Layout';
 import type {ConceptDetail} from '@site/src/components/Graph/types';
 import {allConcepts, conceptOrder, concepts as graphConcepts, relations} from '@site/src/data/graphData';
@@ -98,6 +99,28 @@ export default function ConceptPage({conceptData}: Props): ReactNode {
     <Layout
       title={detail.name}
       description={detail.tooltip.summary}>
+      <Head>
+        <meta property="og:title" content={detail.name} />
+        <meta property="og:description" content={detail.tooltip.summary} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={`https://aides.thend.cn/img/concept-${detail.id}.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={detail.name} />
+        <meta name="twitter:description" content={detail.tooltip.summary} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'DefinedTerm',
+            name: detail.name,
+            alternateName: detail.nameEn,
+            description: detail.tooltip.summary,
+            inDefinedTermSet: {
+              '@type': 'DefinedTermSet',
+              name: 'AI-Aides 概念图谱',
+            },
+          })}
+        </script>
+      </Head>
       <main className={styles.container}>
         <nav className={styles.breadcrumb}>
           <Link to="/">首页</Link>
