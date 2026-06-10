@@ -1,129 +1,129 @@
-# Architecture
+# 架构
 
-**Mapped:** 2026-06-10
-**Project:** AI-Aides
+**映射日期：** 2026-06-10
+**项目：** AI-Aides
 
-## Pattern
+## 架构模式
 
-**Static Site Generation (SSG)** — Docusaurus builds a React-based static site at build time. No server-side rendering or API backend. All data is embedded at build time.
+**静态站点生成（SSG）** — Docusaurus 在构建时生成基于 React 的静态站点。无服务端渲染或 API 后端。所有数据在构建时嵌入。
 
-## System Overview
+## 系统总览
 
 ```
 ┌─────────────────────────────────────────────┐
-│  Docusaurus Build (SSG)                     │
+│  Docusaurus 构建（SSG）                      │
 │  ┌───────────┐  ┌───────────┐  ┌─────────┐ │
-│  │ Pages     │  │ Components│  │ Data    │ │
+│  │ 页面      │  │ 组件      │  │ 数据    │ │
 │  │ (React)   │  │ (React)   │  │ (TS)    │ │
 │  └─────┬─────┘  └─────┬─────┘  └────┬────┘ │
 │        │              │              │       │
 │        └──────────────┴──────────────┘       │
 │                       │                      │
-│              Webpack 5 Bundle                 │
+│              Webpack 5 打包                   │
 │              + static/x6.min.js              │
 └───────────────────────┬─────────────────────┘
                         │
-                   Docker Build
+                   Docker 构建
                    (nginx:alpine)
                         │
-                   Static HTML/JS/CSS
-                   served by Nginx
+                   静态 HTML/JS/CSS
+                   由 Nginx 提供服务
 ```
 
-## Pages
+## 页面
 
-| Page | Route | File | Purpose |
-|------|-------|------|---------|
-| Home (Graph) | `/` | `aides/src/pages/index.tsx` | Interactive concept graph with search/filter |
-| Concept Detail | `/concept?id=<id>` | `aides/src/pages/concept.tsx` | Full concept detail with 9 sections |
-| Docs | `/docs/*` | Docusaurus docs plugin | Standard documentation (default template) |
+| 页面 | 路由 | 文件 | 用途 |
+|------|------|------|------|
+| 首页（图谱） | `/` | `aides/src/pages/index.tsx` | 带搜索/筛选的交互式概念图谱 |
+| 概念详情 | `/concept?id=<id>` | `aides/src/pages/concept.tsx` | 包含9个区块的完整概念详情 |
+| 文档 | `/docs/*` | Docusaurus 文档插件 | 标准文档（默认模板） |
 
-## Component Architecture
+## 组件架构
 
-### Graph System (Core Feature)
-
-```
-index.tsx (Home Page)
-  ├── Category filter buttons
-  ├── Search input (debounced 200ms)
-  └── <GraphCanvas>  ← Main visualization component
-        ├── Layout algorithm (category-based rows)
-        ├── AntV X6 Graph instance (via window.X6)
-        ├── Node rendering (color-coded by category)
-        ├── Edge rendering (Bézier curves, relation labels)
-        ├── Tooltip system (mouseover, 200ms debounce)
-        ├── Filter/search response (updates node/edge styles)
-        └── Click handler → SPA navigation to detail page
-```
-
-### Data Flow
+### 图谱系统（核心功能）
 
 ```
-allConcepts.ts (Single Source of Truth)
-  ├── concepts[] → GraphCanvas nodes
-  ├── relations[] → GraphCanvas edges
-  ├── conceptOrder[] → Concept detail page navigation
-  └── allConcepts{} → Concept detail page content (full data)
+index.tsx（首页）
+  ├── 分类筛选按钮
+  ├── 搜索输入框（200ms 防抖）
+  └── <GraphCanvas>  ← 主可视化组件
+        ├── 布局算法（基于分类的行布局）
+        ├── AntV X6 图实例（通过 window.X6）
+        ├── 节点渲染（按分类着色）
+        ├── 边渲染（贝塞尔曲线，关系标签）
+        ├── 悬浮提示系统（鼠标悬浮，200ms 防抖）
+        ├── 筛选/搜索响应（更新节点/边样式）
+        └── 点击处理 → SPA 导航到详情页
 ```
 
-**Key types defined in `aides/src/components/Graph/types.ts`:**
-- `ConceptData` — Simplified concept for graph nodes
-- `RelationData` — Source/target relation for edges
+### 数据流
 
-**Detailed type defined in `aides/src/data/allConcepts.ts`:**
-- `ConceptDetail` — Full concept with 9 detail sections
+```
+allConcepts.ts（单一数据源）
+  ├── concepts[] → GraphCanvas 节点
+  ├── relations[] → GraphCanvas 边
+  ├── conceptOrder[] → 概念详情页导航
+  └── allConcepts{} → 概念详情页内容（完整数据）
+```
 
-### Concept Detail Page
+**核心类型定义在 `aides/src/components/Graph/types.ts`：**
+- `ConceptData` — 图谱节点的简化概念数据
+- `RelationData` — 源/目标关系数据
+
+**详细类型定义在 `aides/src/data/allConcepts.ts`：**
+- `ConceptDetail` — 包含9个详情区块的完整概念
+
+### 概念详情页
 
 ```
 concept.tsx
-  ├── URL param parsing (?id=)
-  ├── Breadcrumb navigation
-  ├── Header (name, abbreviation, category badge, difficulty stars, tags)
-  ├── Sections (conditionally rendered):
-  │   ├── Definition + Plain Explanation
-  │   ├── Analogy
-  │   ├── Key Points
-  │   ├── Use Cases
-  │   ├── Related Concepts (links to other detail pages)
-  │   └── Resources (external links with type/language/difficulty)
-  └── Navigation (prev/next concept)
+  ├── URL 参数解析（?id=）
+  ├── 面包屑导航
+  ├── 头部（名称、缩写、分类徽章、难度星级、标签）
+  ├── 内容区块（条件渲染）：
+  │   ├── 📖 定义 + 白话解释
+  │   ├── 💡 类比理解
+  │   ├── ⭐ 核心要点
+  │   ├── 🎯 应用场景
+  │   ├── 🔗 相关概念（链接到其他详情页）
+  │   └── 📚 延伸阅读（外链，含类型/语言/难度）
+  └── 导航（上一个/下一个概念）
 ```
 
-### Unused Components
+### 未使用的组件
 
-| Component | Status |
-|-----------|--------|
-| `HomepageFeatures` | Unused — still contains Docusaurus default template content |
-| `AINewsSidebar` | Built but disconnected — not rendered in any page |
+| 组件 | 状态 |
+|------|------|
+| `HomepageFeatures` | 未使用 — 仍包含 Docusaurus 默认模板内容 |
+| `AINewsSidebar` | 已构建但未接入 — 未在任何页面中渲染 |
 
-## Category System
+## 分类系统
 
-Concepts are organized into 5 categories with consistent color coding:
+概念按5个分类组织，使用一致的配色方案：
 
-| Category ID | Display Name | Color | Row Position |
-|-------------|-------------|-------|--------------|
-| `basic` | 基础概念 | `#5B5FC7` (Indigo) | Row 1 (y=100) |
-| `tech` | 技术方法 | `#00D084` (Green) | Row 2 (y=280) |
-| `methodology` | 方法论 | `#E91E63` (Pink) | Row 3 (y=460) |
-| `architecture` | 架构模式 | `#733EE4` (Purple) | Row 4 (y=640) |
-| `tool` | 工具协议 | `#FF9800` (Orange) | Row 5 (y=820) |
+| 分类 ID | 显示名称 | 颜色 | 行位置 |
+|---------|---------|------|--------|
+| `basic` | 基础概念 | `#5B5FC7`（靛蓝） | 第1行 (y=100) |
+| `tech` | 技术方法 | `#00D084`（绿色） | 第2行 (y=280) |
+| `methodology` | 方法论 | `#E91E63`（粉色） | 第3行 (y=460) |
+| `architecture` | 架构模式 | `#733EE4`（紫色） | 第4行 (y=640) |
+| `tool` | 工具协议 | `#FF9800`（橙色） | 第5行 (y=820) |
 
-## Layout Algorithm
+## 布局算法
 
-The graph uses a custom category-row layout (not force-directed):
-- Concepts grouped by category
-- Each category gets a horizontal row at fixed Y position
-- Within a row, concepts spaced at 220px intervals, centered on 1400px canvas
-- Canvas: 1400×1000px with dot grid background
-- Interactions: mousewheel zoom (0.3x–3x), drag pan, node click
+图谱使用自定义的分类行布局（非力导向）：
+- 概念按分类分组
+- 每个分类占据固定 Y 坐标的水平行
+- 行内概念间距 220px，在 1400px 画布上居中
+- 画布尺寸：1400×1000px，带点阵网格背景
+- 交互：鼠标滚轮缩放（0.3x–3x）、拖拽平移、节点点击
 
-## Routing
+## 路由
 
-| Pattern | Implementation |
-|---------|---------------|
-| `/` | Docusaurus page component (`index.tsx`) |
-| `/concept?id=<id>` | Query parameter routing (`useLocation` + `URLSearchParams`) |
-| `/docs/*` | Docusaurus docs plugin |
+| 模式 | 实现方式 |
+|------|---------|
+| `/` | Docusaurus 页面组件（`index.tsx`） |
+| `/concept?id=<id>` | 查询参数路由（`useLocation` + `URLSearchParams`） |
+| `/docs/*` | Docusaurus 文档插件 |
 
-**Note:** Concept detail uses query parameters (`?id=`), not path segments. This is flagged as an SEO issue in the project's issue tracker.
+**注意：** 概念详情使用查询参数（`?id=`），而非路径段。这在项目的问题跟踪器中被标记为 SEO 问题。

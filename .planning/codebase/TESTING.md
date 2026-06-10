@@ -1,81 +1,81 @@
-# Testing
+# 测试
 
-**Mapped:** 2026-06-10
-**Project:** AI-Aides
+**映射日期：** 2026-06-10
+**项目：** AI-Aides
 
-## Current State
+## 当前状态
 
-**Zero test coverage.** No test files exist in the project source (`aides/src/`).
+**零测试覆盖率。** 项目源码（`aides/src/`）中不存在任何测试文件。
 
-| Dimension | Status |
-|-----------|--------|
-| Unit tests | ❌ None |
-| Integration tests | ❌ None |
-| E2E tests | ❌ None |
-| Component tests | ❌ None |
-| Visual regression | ❌ None |
-| Accessibility tests | ❌ None |
+| 维度 | 状态 |
+|------|------|
+| 单元测试 | ❌ 无 |
+| 集成测试 | ❌ 无 |
+| 端到端测试 | ❌ 无 |
+| 组件测试 | ❌ 无 |
+| 视觉回归测试 | ❌ 无 |
+| 无障碍测试 | ❌ 无 |
 
-## Test Infrastructure
+## 测试基础设施
 
-| Tool | Status |
-|------|--------|
-| Test runner | Not configured |
-| Assertion library | Not configured |
-| Testing library | Not installed |
-| Mock utilities | Not installed |
-| Coverage tool | Not configured |
+| 工具 | 状态 |
+|------|------|
+| 测试运行器 | 未配置 |
+| 断言库 | 未配置 |
+| 测试工具库 | 未安装 |
+| Mock 工具 | 未安装 |
+| 覆盖率工具 | 未配置 |
 
-## CI Test Steps
+## CI 测试步骤
 
-The GitHub Actions workflow (`.github/workflows/deploy.yml`) includes:
+GitHub Actions 工作流（`.github/workflows/deploy.yml`）包含：
 
 ```yaml
 - name: Check TypeScript
   run: npx tsc --noEmit
 
 - name: ESLint
-  run: npm run lint || true   # Note: allowed to fail (|| true)
+  run: npm run lint || true   # 注意：即使失败也通过（|| true）
 ```
 
-**Observations:**
-- TypeScript type checking runs but is not a test suite
-- ESLint is configured to pass even on failure (`|| true`)
-- No test step in the CI pipeline
+**观察：**
+- TypeScript 类型检查会运行，但不是测试套件
+- ESLint 配置为即使失败也通过（`|| true`）
+- CI 流水线中没有测试步骤
 
-## What Should Be Tested (Recommendations)
+## 建议测试项
 
-### High Priority
+### 高优先级
 
-1. **Data integrity** — Validate `allConcepts.ts` structure:
-   - Every concept has all required fields
-   - Every `relatedConcepts` reference points to an existing concept
-   - Every `relations[]` source/target maps to an existing concept
-   - No duplicate IDs
-   - Category values are valid
+1. **数据完整性** — 验证 `allConcepts.ts` 结构：
+   - 每个概念都包含所有必填字段
+   - 每个 `relatedConcepts` 引用都指向已存在的概念
+   - 每个 `relations[]` 的 source/target 都映射到已存在的概念
+   - 无重复 ID
+   - 分类值合法
 
-2. **Concept detail page** — Rendering logic:
-   - Renders correctly with valid concept ID
-   - Shows "not found" for invalid concept ID
-   - Shows concept list when no ID provided
-   - Prev/next navigation works at boundaries
+2. **概念详情页** — 渲染逻辑：
+   - 有效概念 ID 时正确渲染
+   - 无效概念 ID 时显示"未找到"
+   - 未提供 ID 时显示概念列表
+   - 首尾概念的前后导航正确处理
 
-3. **Graph component** — Core interaction:
-   - Nodes render for all concepts
-   - Edges render for all relations
-   - Category filter updates node/edge styles
-   - Search filter matches by name, abbreviation, and tags
+3. **图谱组件** — 核心交互：
+   - 所有概念节点正确渲染
+   - 所有关系边正确渲染
+   - 分类筛选更新节点/边样式
+   - 搜索筛选按名称、缩写和标签匹配
 
-### Medium Priority
+### 中优先级
 
-4. **Layout algorithm** — `layoutConcepts()` function:
-   - Correct positions for each category
-   - Centering within canvas width
+4. **布局算法** — `layoutConcepts()` 函数：
+   - 每个分类位置正确
+   - 画布宽度内居中
 
-5. **URL routing** — SPA navigation:
-   - Query parameter parsing
-   - History navigation (back/forward)
+5. **URL 路由** — SPA 导航：
+   - 查询参数解析
+   - 历史导航（前进/后退）
 
-6. **X6 loading** — Graceful degradation:
-   - Loading state shown while X6 loads
-   - Error handling when X6 fails to load
+6. **X6 加载** — 优雅降级：
+   - X6 加载期间显示加载状态
+   - X6 加载失败时的错误处理

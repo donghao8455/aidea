@@ -1,47 +1,47 @@
-# Integrations
+# 外部集成
 
-**Mapped:** 2026-06-10
-**Project:** AI-Aides
+**映射日期：** 2026-06-10
+**项目：** AI-Aides
 
-## External Services
+## 外部服务
 
-**None currently active.** The application is entirely static — no backend, no database, no external API calls at runtime.
+**当前无任何活跃的外部服务。** 应用完全是静态的 — 无后端、无数据库、无运行时外部 API 调用。
 
-| Service | Status | Notes |
-|---------|--------|-------|
-| AI News API | ❌ Mock data | `aides/src/data/aiNews.ts` contains hardcoded mock entries |
-| Analytics | ❌ Not configured | No Google Analytics, Plausible, or other tracking |
-| Search backend | ❌ None | Search is client-side string matching on concept names/tags |
-| CMS / Content API | ❌ None | All content is hardcoded in `allConcepts.ts` |
+| 服务 | 状态 | 说明 |
+|------|------|------|
+| AI 新闻 API | ❌ 模拟数据 | `aides/src/data/aiNews.ts` 包含硬编码的模拟条目 |
+| 数据分析 | ❌ 未配置 | 无 Google Analytics、Plausible 或其他追踪工具 |
+| 搜索后端 | ❌ 无 | 搜索是客户端对概念名称/标签的字符串匹配 |
+| CMS / 内容 API | ❌ 无 | 所有内容硬编码在 `allConcepts.ts` 中 |
 
-## Static Content Sources
+## 静态内容来源
 
-| Source | Format | Location |
-|--------|--------|----------|
-| Concept data | TypeScript data file | `aides/src/data/allConcepts.ts` (~62KB) |
-| AI News feed | TypeScript data file | `aides/src/data/aiNews.ts` (12 mock items) |
-| Documentation | MDX files | `aides/docs/` (Docusaurus docs plugin) |
-| Blog posts | MDX files | `aides/blog/` (template defaults, not customized) |
+| 来源 | 格式 | 位置 |
+|------|------|------|
+| 概念数据 | TypeScript 数据文件 | `aides/src/data/allConcepts.ts`（约62KB） |
+| AI 新闻流 | TypeScript 数据文件 | `aides/src/data/aiNews.ts`（12条模拟数据） |
+| 文档页面 | MDX 文件 | `aides/docs/`（Docusaurus 文档插件） |
+| 博客文章 | MDX 文件 | `aides/blog/`（默认模板，未自定义） |
 
-## Third-Party Libraries (Runtime)
+## 第三方库（运行时）
 
-| Library | Integration Method |
-|---------|-------------------|
-| AntV X6 | Global `<script>` tag from `/x6.min.js` — NOT imported as ES module |
-| React | Bundled by Docusaurus/Webpack |
-| Docusaurus theme | Bundled by Docusaurus/Webpack |
+| 库 | 集成方式 |
+|----|----------|
+| AntV X6 | 全局 `<script>` 标签从 `/x6.min.js` 加载 — 非 ES 模块导入 |
+| React | 由 Docusaurus/Webpack 打包 |
+| Docusaurus 主题 | 由 Docusaurus/Webpack 打包 |
 
-## Build & Deploy Integrations
+## 构建与部署集成
 
-| Integration | Details |
-|-------------|---------|
-| GitHub Actions | Build + Docker + SSH deploy on push to `main` |
-| Docker Hub (local) | Image built and transferred via SSH (`docker save` → base64 → `docker load`) |
-| npm registry | Dependencies installed via `npm ci` |
+| 集成项 | 详情 |
+|--------|------|
+| GitHub Actions | 推送到 `main` 分支时触发构建 + Docker + SSH 部署 |
+| Docker（本地） | 镜像构建后通过 SSH 传输（`docker save` → base64 → `docker load`） |
+| npm 仓库 | 通过 `npm ci` 安装依赖 |
 
-## Planned Integrations (per PRD)
+## 计划中的集成（根据 PRD）
 
-The Optimization PRD (`docs/AI-Aides-Optimization-PRD-v1.0.md`) mentions:
-- Real AI news data source (RSS/API) — currently mock
-- Google Analytics or similar — currently absent
-- Possible search backend for enhanced search — currently client-side only
+优化方案 PRD（`docs/AI-Aides-Optimization-PRD-v1.0.md`）提到：
+- 真实 AI 新闻数据源（RSS/API）— 当前为模拟数据
+- Google Analytics 或类似工具 — 当前未配置
+- 可能的搜索后端用于增强搜索 — 当前仅客户端搜索
