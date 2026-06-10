@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {concepts, relations} from '@site/src/data/allConcepts';
+import {concepts, relations} from '@site/src/data/graphData';
 import type {ConceptData} from './types';
+import {layoutConcepts} from './layoutHierarchical';
 import styles from './GraphCanvas.module.css';
 
 const categoryColors: Record<string, {bg: string; border: string}> = {
@@ -11,7 +12,7 @@ const categoryColors: Record<string, {bg: string; border: string}> = {
   tool: {bg: '#FFF3E0', border: '#FF9800'},
 };
 
-const categoryOrder = ['basic', 'tech', 'methodology', 'architecture', 'tool'];
+const categoryOrder = ['basic', 'tech', 'methodology', 'architecture', 'tool']; // 保留用于潜在的向后兼容
 
 // X6 Graph 实例类型（通过全局脚本加载，类型声明见 src/types/x6.d.ts）
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -390,43 +391,8 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   }, [selectedCategory, searchQuery]);
 
   // ============================================================
-  // 布局算法 - 增加间距，减少边重叠
+  // 布局算法已移至 ./layoutHierarchical.ts（分层力导向，约束求解避免重叠）
   // ============================================================
-  const layoutConcepts = (nodes: ConceptData[]) => {
-    const categoryNodes: Record<string, ConceptData[]> = {};
-
-    nodes.forEach(node => {
-      if (!categoryNodes[node.category]) {
-        categoryNodes[node.category] = [];
-      }
-      categoryNodes[node.category].push(node);
-    });
-
-    const positions: Record<string, {x: number; y: number}> = {};
-    // 增加行间距，减少边重叠
-    const categoryY: Record<string, number> = {
-      basic: 100,
-      tech: 280,
-      methodology: 460,
-      architecture: 640,
-      tool: 820,
-    };
-    // 增加列间距
-    const colSpacing = 220;
-
-    categoryOrder.forEach(cat => {
-      const catNodes = categoryNodes[cat] || [];
-      const startX = (1400 - (catNodes.length - 1) * colSpacing) / 2;
-      catNodes.forEach((node, idx) => {
-        positions[node.id] = {
-          x: startX + idx * colSpacing,
-          y: categoryY[cat],
-        };
-      });
-    });
-
-    return positions;
-  };
 
   // ============================================================
   // 渲染：始终保留 graph 容器（ref 不能被条件渲染移除）

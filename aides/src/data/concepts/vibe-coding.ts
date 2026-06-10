@@ -1,0 +1,39 @@
+import type {ConceptDetail} from '@site/src/components/Graph/types';
+
+const vibe_coding: ConceptDetail = {    id: 'vibe-coding',
+    name: '氛围编程',
+    nameEn: 'Vibe Coding',
+    abbreviation: 'VC',
+    category: 'methodology',
+    difficulty: 2,
+    tags: ['methodology', 'coding', '2025', 'trending'],
+    tooltip: {summary: '2025年新兴的AI辅助编程范式，开发者用自然语言描述意图，AI完成代码实现'},
+    detail: {
+      definition: 'Vibe Coding是2025年随Claude Code、Google Jules等AI编程工具兴起的新编程范式。开发者不再直接编写代码，而是用自然语言描述想要的功能和"感觉"，由AI理解意图后生成代码。开发者扮演"产品经理+架构师"的角色，把控方向而非细节。',
+      plainExplanation: '以前写代码是"我要一行行敲代码"，Vibe Coding是"我说话，AI帮我写代码"。就像跟一个懂编程的助手说"帮我做一个登录页面，要简洁好看"，助手就帮你做好了。',
+      analogy: '就像导演和编剧的关系：导演不用自己写剧本，只需要跟编剧描述"我要什么感觉、什么氛围"，编剧来完成具体台词。Vibe Coding中，开发者是导演，AI是编剧。',
+      keyPoints: [
+        '意图驱动：用自然语言描述而非代码指令',
+        'AI代笔：代码由AI生成，开发者审核修改',
+        '快速原型：能快速验证想法和方向',
+        '角色转变：从"码农"变成"AI管理者"',
+        '仍需验收：开发者负责确保代码质量',
+      ],
+      useCases: [
+        {title: '快速原型开发', description: '快速将想法转化为可运行的代码', example: '创业公司用Vibe Coding快速验证MVP'},
+        {title: '前端开发', description: '用描述性语言构建UI界面', example: '"要一个现代感的仪表盘，包含图表和表格"'},
+        {title: '代码重构', description: '用自然语言描述重构目标', example: '"把这个函数改成更易读的版本"'},
+        {title: '学习辅助', description: '通过描述想要的功能学习编程', example: '初学者通过AI生成的代码学习编程'},
+      ],
+      relatedConcepts: [
+        {conceptId: 'agent', relationType: 'powers', relationLabel: '驱动'},
+        {conceptId: 'llm', relationType: 'uses', relationLabel: '使用'},
+        {conceptId: 'computer-use', relationType: 'extends', relationLabel: '扩展'},
+      ],
+      resources: [
+        {title: 'Claude Code官方文档', url: 'https://docs.anthropic.com/en/docs/claude-code', type: 'documentation', language: 'en', difficulty: 'beginner', recommended: true},
+      ],
+    },
+};
+
+export default vibe_coding;

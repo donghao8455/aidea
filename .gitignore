@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+aides/build/
+aides/.docusaurus/
+**/build/
+**/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.production.local
+
+# Docker
+*.tar.gz
+
+# GSD planning artifacts (local only per workflow config)
+.planning/
+
+# Legacy data files (to be cleaned up in DEBT-01)
+aides/data/

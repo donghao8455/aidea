@@ -3,6 +3,7 @@ import {useState, useEffect, useCallback, useRef} from 'react';
 import {useHistory} from '@docusaurus/router';
 import Layout from '@theme/Layout';
 import {GraphCanvas} from '@site/src/components/Graph';
+import {concepts, relations} from '@site/src/data/graphData';
 import styles from './index.module.css';
 
 const categories = [

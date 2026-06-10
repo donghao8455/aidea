@@ -1,9 +1,11 @@
 import type {ReactNode} from 'react';
 import {useEffect, useState} from 'react';
-import {useLocation} from 'react-router-dom';
+import {useLocation} from '@docusaurus/router';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
-import {allConcepts, conceptOrder} from '@site/src/data/allConcepts';
+import type {ConceptDetail} from '@site/src/components/Graph/types';
+import {allConcepts, conceptOrder} from '@site/src/data/graphData';
+import {getConceptDetail} from '@site/src/data/concepts';
 import styles from './concepts/concept.module.css';
 
 const categoryNames: Record<string, string> = {
@@ -44,14 +46,33 @@ function renderStars(difficulty: number) {
 export default function ConceptPage(): ReactNode {
   const location = useLocation();
   const [conceptId, setConceptId] = useState<string>('');
-  
+  const [conceptDetail, setConceptDetail] = useState<ConceptDetail | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const id = params.get('id') || '';
     setConceptId(id);
   }, [location.search]);
-  
+
+  useEffect(() => {
+    if (!conceptId) {
+      setConceptDetail(null);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    getConceptDetail(conceptId).then(detail => {
+      if (!cancelled) {
+        setConceptDetail(detail);
+        setLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [conceptId]);
+
   const conceptData = conceptId ? allConcepts[conceptId] : null;
+  const detailContent = conceptDetail;
 
   // 如果没有概念ID，显示概念列表
   if (!conceptId) {
@@ -89,6 +110,19 @@ export default function ConceptPage(): ReactNode {
             <Link to="/" className={styles.backLink}>
               ← 返回概念图谱
             </Link>
+          </div>
+        </main>
+      </Layout>
+    );
+  }
+
+  // 加载详情中
+  if (loading || !detailContent) {
+    return (
+      <Layout title="加载中..." description="AI概念详情">
+        <main className={styles.container}>
+          <div className={styles.notFound}>
+            <p>正在加载概念详情...</p>
           </div>
         </main>
       </Layout>
@@ -147,15 +181,15 @@ export default function ConceptPage(): ReactNode {
             <span className={styles.sectionIcon}>📖</span>
             定义
           </h2>
-          <p className={styles.definition}>{conceptData.detail.definition}</p>
-          {conceptData.detail.plainExplanation && (
+          <p className={styles.definition}>{detailContent.definition}</p>
+          {detailContent.plainExplanation && (
             <p className={styles.definition} style={{marginTop: '1rem', color: 'var(--ifm-color-emphasis-700)'}}>
-              💡 {conceptData.detail.plainExplanation}
+              💡 {detailContent.plainExplanation}
             </p>
           )}
         </section>
 
-        {conceptData.detail.analogy && (
+        {detailContent.analogy && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>💡</span>
@@ -163,19 +197,19 @@ export default function ConceptPage(): ReactNode {
             </h2>
             <div className={styles.analogy}>
               <div className={styles.analogyTitle}>🌰 生活化类比</div>
-              {conceptData.detail.analogy}
+              {detailContent.analogy}
             </div>
           </section>
         )}
 
-        {conceptData.detail.keyPoints && conceptData.detail.keyPoints.length > 0 && (
+        {detailContent.keyPoints && detailContent.keyPoints.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>⭐</span>
               核心要点
             </h2>
             <ul className={styles.keyPoints}>
-              {conceptData.detail.keyPoints.map((point, index) => (
+              {detailContent.keyPoints.map((point, index) => (
                 <li key={index} className={styles.keyPoint}>
                   <span className={styles.keyPointIcon}>{index + 1}</span>
                   <span>{point}</span>
@@ -185,14 +219,14 @@ export default function ConceptPage(): ReactNode {
           </section>
         )}
 
-        {conceptData.detail.useCases && conceptData.detail.useCases.length > 0 && (
+        {detailContent.useCases && detailContent.useCases.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>🎯</span>
               应用场景
             </h2>
             <div className={styles.useCases}>
-              {conceptData.detail.useCases.map((useCase, index) => (
+              {detailContent.useCases.map((useCase, index) => (
                 <div key={index} className={styles.useCase}>
                   <h3 className={styles.useCaseTitle}>
                     <span className={styles.useCaseIcon}>→</span>
@@ -210,14 +244,14 @@ export default function ConceptPage(): ReactNode {
           </section>
         )}
 
-        {conceptData.detail.relatedConcepts && conceptData.detail.relatedConcepts.length > 0 && (
+        {detailContent.relatedConcepts && detailContent.relatedConcepts.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>🔗</span>
               相关概念
             </h2>
             <div className={styles.relatedConcepts}>
-              {conceptData.detail.relatedConcepts.map((related, index) => {
+              {detailContent.relatedConcepts.map((related, index) => {
                 const relatedDetail = allConcepts[related.conceptId];
                 if (!relatedDetail) return null;
                 return (
@@ -234,14 +268,14 @@ export default function ConceptPage(): ReactNode {
           </section>
         )}
 
-        {conceptData.detail.resources && conceptData.detail.resources.length > 0 && (
+        {detailContent.resources && detailContent.resources.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>📚</span>
               延伸阅读
             </h2>
             <div className={styles.resources}>
-              {conceptData.detail.resources.map((resource, index) => (
+              {detailContent.resources.map((resource, index) => (
                 <a
                   key={index}
                   href={resource.url}
