@@ -97,6 +97,24 @@
   color: white;
 }
 
+/* 新闻占位（Phase 4 会填充） */
+.newsPlaceholder {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.newsPlaceholder h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #213547;
+}
+
 @media screen and (max-width: 768px) {
   .title {
     font-size: 1.8rem;
@@ -106,11 +124,36 @@
     padding: 1rem;
   }
 
+  /* 移动端：sticky 搜索栏（始终可见） */
+  .searchBox {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--ifm-background-color, #fff);
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .searchInput {
+    padding: 0.6rem 2.5rem 0.6rem 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  /* 移动端：横向滚动分类标签栏（替代胶囊按钮） */
   .categoryFilters {
-    gap: 0.25rem;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding: 0 0 0.5rem 0;
+    gap: 0.4rem;
   }
 
   .categoryBtn {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
   }

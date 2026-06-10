@@ -5,9 +5,27 @@ import Layout from '@theme/Layout';
 import {GraphCanvas} from '@site/src/components/Graph';
 import {LearningPathSelector} from '@site/src/components/LearningPathSelector';
 import {SearchSuggest} from '@site/src/components/SearchSuggest';
+import {MobileConceptList} from '@site/src/components/MobileConceptList';
 import {getLearningPath} from '@site/src/data/learningPaths';
 import {concepts, relations} from '@site/src/data/graphData';
 import styles from './index.module.css';
+
+// Docusaurus 3.10 未提供 useMediaQuery 钩子
+// SSR 安全版本：默认 false（桌面），客户端 hydrate 后检测
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mql = window.matchMedia(query);
+    setMatches(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, [query]);
+
+  return matches;
+}
 
 const categories = [
   {id: 'basic', name: '基础概念', color: '#5B5FC7'},
@@ -18,6 +36,7 @@ const categories = [
 ];
 
 export default function Home(): ReactNode {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -117,12 +136,31 @@ export default function Home(): ReactNode {
           />
         </div>
 
-        <GraphCanvas
-          onNodeClick={handleNodeClick}
-          selectedCategory={selectedCategory}
-          searchQuery={debouncedQuery}
-          learningPath={learningPathIds}
-        />
+        {isMobile ? (
+          <MobileConceptList
+            concepts={concepts}
+            selectedCategory={selectedCategory}
+            onCategoryClick={catId => setSelectedCategory(prev => (prev === catId ? null : catId))}
+          />
+        ) : (
+          <GraphCanvas
+            onNodeClick={handleNodeClick}
+            selectedCategory={selectedCategory}
+            searchQuery={debouncedQuery}
+            learningPath={learningPathIds}
+          />
+        )}
+
+        {/* 移动端新闻占位（Phase 4 会填充） */}
+        {isMobile && (
+          <div
+            className={styles.newsPlaceholder}
+            data-news-placeholder
+            aria-label="AI 新动态（即将上线）">
+            <h3>📡 AI 新动态</h3>
+            <p>AI 资讯数据采集功能开发中，Phase 4 上线后这里会展示最新 AI 新闻。</p>
+          </div>
+        )}
       </main>
     </Layout>
   );

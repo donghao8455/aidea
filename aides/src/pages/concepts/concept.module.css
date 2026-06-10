@@ -464,3 +464,29 @@
     max-width: 100%;
   }
 }
+/* 移动端 padding 缩小 + 字体调整 */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1rem 0.75rem;
+  }
+
+  .title {
+    font-size: 1.5rem !important;
+  }
+
+  .abbreviation {
+    font-size: 0.9rem !important;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+  }
+
+  .section {
+    padding: 1rem 0;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem !important;
+  }
+}

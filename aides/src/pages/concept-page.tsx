@@ -1,10 +1,25 @@
 import type {ReactNode} from 'react';
+import {useEffect, useState} from 'react';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import type {ConceptDetail} from '@site/src/components/Graph/types';
 import {allConcepts, conceptOrder, concepts as graphConcepts, relations} from '@site/src/data/graphData';
 import {MiniGraph} from '@site/src/components/MiniGraph';
 import styles from './concepts/concept.module.css';
+
+// SSR 安全移动端检测
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mql = window.matchMedia(query);
+    setMatches(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, [query]);
+  return matches;
+}
 
 const categoryNames: Record<string, string> = {
   basic: '基础概念',
@@ -52,6 +67,7 @@ interface Props {
 }
 
 export default function ConceptPage({conceptData}: Props): ReactNode {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const detail = conceptData?.default;
   const conceptId = detail?.id || '';
 
@@ -116,11 +132,13 @@ export default function ConceptPage({conceptData}: Props): ReactNode {
           </div>
         </header>
 
-        <MiniGraph
-          currentConceptId={conceptId}
-          concepts={graphConcepts}
-          relations={relations}
-        />
+        {!isMobile && (
+          <MiniGraph
+            currentConceptId={conceptId}
+            concepts={graphConcepts}
+            relations={relations}
+          />
+        )}
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
