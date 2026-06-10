@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-size: 0.95rem;
+  color: #213547;
+  font-weight: 600;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.4rem 0.8rem;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.button:hover {
+  border-color: #5B5FC7;
+  background: #f8fafc;
+}
+
+.button.active {
+  border-color: #5B5FC7;
+  background: #5B5FC7;
+  color: #fff;
+}
+
+.button.active .pathDesc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.pathName {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pathDesc {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 2px;
+}

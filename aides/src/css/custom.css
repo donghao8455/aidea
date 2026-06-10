@@ -15,6 +15,13 @@
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* 自定义品牌色 — 提高对比度以满足 WCAG 2.1 AA */
+  --ai-brand-primary: #4338ca;   /* Indigo-700, AA 4.5:1 vs white */
+  --ai-brand-tech: #047857;      /* Emerald-700, AA 4.5:1 vs white */
+  --ai-brand-methodology: #be185d;/* Pink-700, AA 4.5:1 vs white */
+  --ai-brand-architecture: #6d28d9;/* Violet-700, AA 4.5:1 vs white */
+  --ai-brand-tool: #c2410c;      /* Orange-700, AA 4.5:1 vs white */
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -27,4 +34,61 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================
+ * 全局无障碍（A11Y-01 键盘焦点环）
+ * ============================================================ */
+
+/* 可见的键盘焦点环（仅键盘导航时显示） */
+*:focus {
+  outline: none; /* 移除浏览器默认的难看焦点环 */
+}
+
+*:focus-visible {
+  outline: 3px solid var(--ai-brand-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 5px rgba(67, 56, 202, 0.15);
+}
+
+/* 链接和按钮的具体焦点环 */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible,
+[role="option"]:focus-visible {
+  outline: 3px solid var(--ai-brand-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 跳到主内容链接（提升键盘用户体验） */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--ai-brand-primary);
+  color: white;
+  padding: 8px 16px;
+  z-index: 9999;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* 屏幕阅读器专用（视觉隐藏但可访问） */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

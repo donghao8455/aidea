@@ -3,6 +3,9 @@ import {useState, useEffect, useCallback, useRef} from 'react';
 import {useHistory} from '@docusaurus/router';
 import Layout from '@theme/Layout';
 import {GraphCanvas} from '@site/src/components/Graph';
+import {LearningPathSelector} from '@site/src/components/LearningPathSelector';
+import {SearchSuggest} from '@site/src/components/SearchSuggest';
+import {getLearningPath} from '@site/src/data/learningPaths';
 import {concepts, relations} from '@site/src/data/graphData';
 import styles from './index.module.css';
 
@@ -18,12 +21,16 @@ export default function Home(): ReactNode {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [activePathId, setActivePathId] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const history = useHistory();
 
+  const activePath = activePathId ? getLearningPath(activePathId) : null;
+  const learningPathIds = activePath?.conceptIds || [];
+
   // SPA 路由跳转（无白屏刷新）
   const handleNodeClick = useCallback((conceptId: string) => {
-    history.push(`/concept?id=${conceptId}`);
+    history.push(`/concepts/${conceptId}`);
   }, [history]);
 
   // 搜索防抖：200ms，避免每次按键都触发图谱样式更新
@@ -66,6 +73,10 @@ export default function Home(): ReactNode {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className={styles.searchInput}
+                role="combobox"
+                aria-expanded={searchQuery.length >= 2}
+                aria-autocomplete="list"
+                aria-controls="search-suggestions"
               />
               {searchQuery && (
                 <button
@@ -75,6 +86,7 @@ export default function Home(): ReactNode {
                 </button>
               )}
             </div>
+            <SearchSuggest query={searchQuery} />
 
             <div className={styles.categoryFilters}>
               <button
@@ -98,12 +110,18 @@ export default function Home(): ReactNode {
               ))}
             </div>
           </div>
+
+          <LearningPathSelector
+            activePathId={activePathId}
+            onPathChange={setActivePathId}
+          />
         </div>
 
         <GraphCanvas
           onNodeClick={handleNodeClick}
           selectedCategory={selectedCategory}
           searchQuery={debouncedQuery}
+          learningPath={learningPathIds}
         />
       </main>
     </Layout>

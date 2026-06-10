@@ -1,0 +1,80 @@
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.list {
+  list-style: none;
+  margin: 0.5rem 0 0 0;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  max-width: 500px;
+}
+
+.item {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item.highlighted {
+  background: #f8fafc;
+}
+
+.item a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  color: #213547;
+  text-decoration: none;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #213547;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.matchFrom {
+  color: #5B5FC7;
+  font-weight: 500;
+}
+
+.dot {
+  color: #cbd5e1;
+}
+
+.difficulty {
+  color: #F59E0B;
+}

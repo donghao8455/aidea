@@ -1,0 +1,55 @@
+.container {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 2rem 0;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #213547;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  font-size: 1.1rem;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.neighborGroup {
+  cursor: pointer;
+}
+
+.neighborRect {
+  transition: fill 0.2s ease, stroke-width 0.2s ease;
+}
+
+.neighborGroup:hover .neighborRect {
+  fill: #f1f5f9;
+  stroke-width: 2.5;
+}
+
+.empty {
+  color: #94a3b8;
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+.more {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0.5rem 0 0 0;
+}

@@ -22,12 +22,14 @@ interface GraphCanvasProps {
   onNodeClick?: (conceptId: string) => void;
   selectedCategory?: string | null;
   searchQuery?: string;
+  learningPath?: string[]; // 路径概念 ID 有序数组
 }
 
 export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   onNodeClick,
   selectedCategory,
   searchQuery,
+  learningPath,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<X6Graph>(null);
@@ -389,6 +391,85 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       }
     });
   }, [selectedCategory, searchQuery]);
+
+  // ============================================================
+  // Effect 3: 学习路径高亮（基于 learningPath prop）
+  // ============================================================
+  useEffect(() => {
+    const graph = graphRef.current;
+    if (!graph) return;
+
+    if (!learningPath || learningPath.length === 0) {
+      // 没有学习路径激活 — 重置所有样式为默认（不主动改其他状态）
+      return;
+    }
+
+    const pathSet = new Set(learningPath);
+
+    // 路径中的每个节点应用高亮
+    const nodes = graph.getNodes();
+    nodes.forEach((node: X6Graph) => {
+      const concept: ConceptData = node.getData()?.concept;
+      if (!concept) return;
+
+      const isOnPath = pathSet.has(concept.id);
+      const pathIndex = learningPath.indexOf(concept.id);
+
+      if (isOnPath) {
+        // 路径节点：高亮 + 序号徽章
+        const colors = categoryColors[concept.category] || categoryColors.basic;
+        node.setAttrs({
+          body: {
+            fill: colors.border,
+            stroke: colors.border,
+            strokeWidth: 3,
+            opacity: 1,
+          },
+          label: {
+            text: `${pathIndex + 1}. ${concept.name}\n(${concept.abbreviation})`,
+            fontSize: 11,
+            fontWeight: 700,
+            fill: '#fff',
+          },
+        });
+      } else {
+        // 非路径节点：透明度 0.3
+        node.setAttrs({
+          body: {opacity: 0.3},
+          label: {fill: '#94a3b8'},
+        });
+      }
+    });
+
+    // 路径节点之间的边改为虚线
+    const edges = graph.getEdges();
+    edges.forEach((edge: X6Graph) => {
+      const sourceId = edge.getSourceCellId?.() || edge.getSource()?.cell;
+      const targetId = edge.getTargetCellId?.() || edge.getTarget()?.cell;
+
+      const sourceIdx = learningPath.indexOf(sourceId);
+      const targetIdx = learningPath.indexOf(targetId);
+
+      // 仅当两个端点都是路径节点且相邻时，改为虚线高亮
+      if (sourceIdx !== -1 && targetIdx !== -1 && Math.abs(sourceIdx - targetIdx) === 1) {
+        edge.setAttrs({
+          line: {
+            stroke: '#5B5FC7',
+            strokeWidth: 2.5,
+            strokeDasharray: '5,3',
+          },
+        });
+      } else {
+        edge.setAttrs({
+          line: {
+            stroke: '#e2e8f0',
+            strokeWidth: 1,
+            strokeDasharray: '',
+          },
+        });
+      }
+    });
+  }, [learningPath]);
 
   // ============================================================
   // 布局算法已移至 ./layoutHierarchical.ts（分层力导向，约束求解避免重叠）

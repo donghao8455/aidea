@@ -50,6 +50,15 @@ const config: Config = {
     ],
   ],
 
+  // 自定义插件：注册 /concepts/:id 路由（SSG 预渲染每个概念页）
+  // 见 plugins/concept-routes/index.js
+  plugins: [
+    [
+      require.resolve('./plugins/concept-routes'),
+      {},
+    ],
+  ],
+
   // @antv/x6 v3 通过全局脚本加载（其 ESM 包与 Docusaurus webpack 5 不兼容）
   // 类型声明见 src/types/x6.d.ts
 
@@ -90,7 +99,7 @@ const config: Config = {
           title: '学习资源',
           items: [
             {label: 'AI概念图谱', to: '/'},
-            {label: '概念详情', to: '/concept?id=llm'},
+            {label: '概念详情', to: '/concepts/llm'},
           ],
         },
         {

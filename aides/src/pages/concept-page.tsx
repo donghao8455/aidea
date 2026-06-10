@@ -1,11 +1,9 @@
 import type {ReactNode} from 'react';
-import {useEffect, useState} from 'react';
-import {useLocation} from '@docusaurus/router';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import type {ConceptDetail} from '@site/src/components/Graph/types';
-import {allConcepts, conceptOrder} from '@site/src/data/graphData';
-import {getConceptDetail} from '@site/src/data/concepts';
+import {allConcepts, conceptOrder, concepts as graphConcepts, relations} from '@site/src/data/graphData';
+import {MiniGraph} from '@site/src/components/MiniGraph';
 import styles from './concepts/concept.module.css';
 
 const categoryNames: Record<string, string> = {
@@ -43,70 +41,27 @@ function renderStars(difficulty: number) {
   return stars;
 }
 
-export default function ConceptPage(): ReactNode {
-  const location = useLocation();
-  const [conceptId, setConceptId] = useState<string>('');
-  const [conceptDetail, setConceptDetail] = useState<ConceptDetail | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+/**
+ * 概念详情页（SSG 渲染）
+ *
+ * 数据通过 Docusaurus 插件的 modules.conceptData 注入（每个概念一个独立 chunk）
+ * SSG 阶段直接读取模块默认导出，构建时把数据嵌入 HTML
+ */
+interface Props {
+  conceptData?: {default: ConceptDetail};
+}
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const id = params.get('id') || '';
-    setConceptId(id);
-  }, [location.search]);
+export default function ConceptPage({conceptData}: Props): ReactNode {
+  const detail = conceptData?.default;
+  const conceptId = detail?.id || '';
 
-  useEffect(() => {
-    if (!conceptId) {
-      setConceptDetail(null);
-      return;
-    }
-    let cancelled = false;
-    setLoading(true);
-    getConceptDetail(conceptId).then(detail => {
-      if (!cancelled) {
-        setConceptDetail(detail);
-        setLoading(false);
-      }
-    });
-    return () => { cancelled = true; };
-  }, [conceptId]);
-
-  const conceptData = conceptId ? allConcepts[conceptId] : null;
-  const detailContent = conceptDetail;
-
-  // 如果没有概念ID，显示概念列表
-  if (!conceptId) {
-    return (
-      <Layout title="AI概念列表" description="浏览所有AI概念">
-        <main className={styles.container}>
-          <h1>AI概念列表</h1>
-          <div className={styles.relatedConcepts}>
-            {conceptOrder.map(id => {
-              const concept = allConcepts[id];
-              return (
-                <Link
-                  key={id}
-                  to={`/concept?id=${id}`}
-                  className={styles.relatedLink}>
-                  <span>{concept.name}</span>
-                  <span className={styles.relatedLabel}>{concept.abbreviation}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </main>
-      </Layout>
-    );
-  }
-
-  // 如果概念不存在，显示错误
-  if (!conceptData) {
+  if (!detail) {
     return (
       <Layout title="概念未找到" description="AI概念详情">
         <main className={styles.container}>
           <div className={styles.notFound}>
             <h1>概念未找到</h1>
-            <p>抱歉，找不到您要查看的概念 "{conceptId}"</p>
+            <p>抱歉，找不到您要查看的概念。</p>
             <Link to="/" className={styles.backLink}>
               ← 返回概念图谱
             </Link>
@@ -116,59 +71,44 @@ export default function ConceptPage(): ReactNode {
     );
   }
 
-  // 加载详情中
-  if (loading || !detailContent) {
-    return (
-      <Layout title="加载中..." description="AI概念详情">
-        <main className={styles.container}>
-          <div className={styles.notFound}>
-            <p>正在加载概念详情...</p>
-          </div>
-        </main>
-      </Layout>
-    );
-  }
-
   const currentIndex = conceptOrder.indexOf(conceptId);
   const prevId = currentIndex > 0 ? conceptOrder[currentIndex - 1] : null;
   const nextId = currentIndex < conceptOrder.length - 1 ? conceptOrder[currentIndex + 1] : null;
-
   const prevData = prevId ? allConcepts[prevId] : null;
   const nextData = nextId ? allConcepts[nextId] : null;
-
-  const categoryColor = categoryColors[conceptData.category] || '#5B5FC7';
+  const categoryColor = categoryColors[detail.category] || '#5B5FC7';
 
   return (
     <Layout
-      title={conceptData.name}
-      description={conceptData.tooltip.summary}>
+      title={detail.name}
+      description={detail.tooltip.summary}>
       <main className={styles.container}>
         <nav className={styles.breadcrumb}>
           <Link to="/">首页</Link>
           <span>›</span>
-          <Link to="/">概念图谱</Link>
+          <Link to="/concepts">概念图谱</Link>
           <span>›</span>
-          <span>{conceptData.name}</span>
+          <span>{detail.name}</span>
         </nav>
 
         <header className={styles.header}>
           <div className={styles.titleRow}>
-            <h1 className={styles.title}>{conceptData.name}</h1>
-            <span className={styles.abbreviation}>({conceptData.abbreviation})</span>
+            <h1 className={styles.title}>{detail.name}</h1>
+            <span className={styles.abbreviation}>({detail.abbreviation})</span>
           </div>
           <div className={styles.metaRow}>
             <span
               className={styles.categoryBadge}
               style={{backgroundColor: categoryColor}}>
-              {categoryNames[conceptData.category]}
+              {categoryNames[detail.category]}
             </span>
             <div className={styles.difficulty}>
               <span>难度:</span>
-              {renderStars(conceptData.difficulty)}
+              {renderStars(detail.difficulty)}
             </div>
           </div>
           <div className={styles.tags}>
-            {conceptData.tags.map(tag => (
+            {detail.tags.map(tag => (
               <span key={tag} className={styles.tag}>
                 {tag}
               </span>
@@ -176,20 +116,26 @@ export default function ConceptPage(): ReactNode {
           </div>
         </header>
 
+        <MiniGraph
+          currentConceptId={conceptId}
+          concepts={graphConcepts}
+          relations={relations}
+        />
+
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
             <span className={styles.sectionIcon}>📖</span>
             定义
           </h2>
-          <p className={styles.definition}>{detailContent.definition}</p>
-          {detailContent.plainExplanation && (
+          <p className={styles.definition}>{detail.detail.definition}</p>
+          {detail.detail.plainExplanation && (
             <p className={styles.definition} style={{marginTop: '1rem', color: 'var(--ifm-color-emphasis-700)'}}>
-              💡 {detailContent.plainExplanation}
+              💡 {detail.detail.plainExplanation}
             </p>
           )}
         </section>
 
-        {detailContent.analogy && (
+        {detail.detail.analogy && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>💡</span>
@@ -197,19 +143,19 @@ export default function ConceptPage(): ReactNode {
             </h2>
             <div className={styles.analogy}>
               <div className={styles.analogyTitle}>🌰 生活化类比</div>
-              {detailContent.analogy}
+              {detail.detail.analogy}
             </div>
           </section>
         )}
 
-        {detailContent.keyPoints && detailContent.keyPoints.length > 0 && (
+        {detail.detail.keyPoints && detail.detail.keyPoints.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>⭐</span>
               核心要点
             </h2>
             <ul className={styles.keyPoints}>
-              {detailContent.keyPoints.map((point, index) => (
+              {detail.detail.keyPoints.map((point, index) => (
                 <li key={index} className={styles.keyPoint}>
                   <span className={styles.keyPointIcon}>{index + 1}</span>
                   <span>{point}</span>
@@ -219,14 +165,14 @@ export default function ConceptPage(): ReactNode {
           </section>
         )}
 
-        {detailContent.useCases && detailContent.useCases.length > 0 && (
+        {detail.detail.useCases && detail.detail.useCases.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>🎯</span>
               应用场景
             </h2>
             <div className={styles.useCases}>
-              {detailContent.useCases.map((useCase, index) => (
+              {detail.detail.useCases.map((useCase, index) => (
                 <div key={index} className={styles.useCase}>
                   <h3 className={styles.useCaseTitle}>
                     <span className={styles.useCaseIcon}>→</span>
@@ -244,20 +190,20 @@ export default function ConceptPage(): ReactNode {
           </section>
         )}
 
-        {detailContent.relatedConcepts && detailContent.relatedConcepts.length > 0 && (
+        {detail.detail.relatedConcepts && detail.detail.relatedConcepts.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>🔗</span>
               相关概念
             </h2>
             <div className={styles.relatedConcepts}>
-              {detailContent.relatedConcepts.map((related, index) => {
+              {detail.detail.relatedConcepts.map((related, index) => {
                 const relatedDetail = allConcepts[related.conceptId];
                 if (!relatedDetail) return null;
                 return (
                   <Link
                     key={index}
-                    to={`/concept?id=${related.conceptId}`}
+                    to={`/concepts/${related.conceptId}`}
                     className={styles.relatedLink}>
                     <span>{relatedDetail.name}</span>
                     <span className={styles.relatedLabel}>{related.relationLabel}</span>
@@ -268,14 +214,14 @@ export default function ConceptPage(): ReactNode {
           </section>
         )}
 
-        {detailContent.resources && detailContent.resources.length > 0 && (
+        {detail.detail.resources && detail.detail.resources.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               <span className={styles.sectionIcon}>📚</span>
               延伸阅读
             </h2>
             <div className={styles.resources}>
-              {detailContent.resources.map((resource, index) => (
+              {detail.detail.resources.map((resource, index) => (
                 <a
                   key={index}
                   href={resource.url}
@@ -307,7 +253,7 @@ export default function ConceptPage(): ReactNode {
 
         <nav className={styles.navigation}>
           {prevData ? (
-            <Link to={`/concept?id=${prevData.id}`} className={`${styles.navLink} ${styles.prev}`}>
+            <Link to={`/concepts/${prevData.id}`} className={`${styles.navLink} ${styles.prev}`}>
               <span className={styles.navLabel}>← 上一个</span>
               <span className={styles.navTitle}>{prevData.name}</span>
             </Link>
@@ -315,7 +261,7 @@ export default function ConceptPage(): ReactNode {
             <div />
           )}
           {nextData ? (
-            <Link to={`/concept?id=${nextData.id}`} className={`${styles.navLink} ${styles.next}`}>
+            <Link to={`/concepts/${nextData.id}`} className={`${styles.navLink} ${styles.next}`}>
               <span className={styles.navLabel}>下一个 →</span>
               <span className={styles.navTitle}>{nextData.name}</span>
             </Link>
