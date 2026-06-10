@@ -58,19 +58,47 @@ function renderStars(difficulty: number) {
 }
 
 /**
- * 概念详情页（SSG 渲染）
+ * 概念详情页（SSG + Dev 双模式）
  *
- * 数据通过 Docusaurus 插件的 modules.conceptData 注入（每个概念一个独立 chunk）
- * SSG 阶段直接读取模块默认导出，构建时把数据嵌入 HTML
+ * - SSG 模式：数据通过 Docusaurus 插件的 modules.conceptData 注入（生产构建）
+ * - Dev 模式：从 window.location.pathname 提取 /concepts/:id，动态 import 概念数据
  */
 interface Props {
   conceptData?: {default: ConceptDetail};
 }
 
+// 从 /concepts/:id 路径提取 concept ID
+function extractConceptIdFromPath(pathname: string): string {
+  const match = pathname.match(/^\/concepts\/([a-z0-9-]+)$/);
+  return match ? match[1] : '';
+}
+
 export default function ConceptPage({conceptData}: Props): ReactNode {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const detail = conceptData?.default;
-  const conceptId = detail?.id || '';
+
+  // dev 模式：从 URL 路径提取 concept ID
+  const [conceptIdFromPath, setConceptIdFromPath] = useState('');
+  // dev 模式动态加载的概念数据
+  const [devDetail, setDevDetail] = useState<ConceptDetail | null>(
+    conceptData?.default ?? null
+  );
+
+  useEffect(() => {
+    // SSG 注入的数据已够用，跳过动态加载
+    if (conceptData?.default) return;
+
+    const id = extractConceptIdFromPath(window.location.pathname);
+    setConceptIdFromPath(id);
+    if (!id) return;
+
+    // 动态加载概念数据（dev 模式）
+    import(/* webpackChunkName: "concept-detail" */ `@site/src/data/concepts/${id}`)
+      .then(m => setDevDetail(m.default ?? null))
+      .catch(() => setDevDetail(null));
+  }, [conceptData]);
+
+  const detail = conceptData?.default ?? devDetail;
+  const conceptId = detail?.id || conceptIdFromPath || '';
 
   if (!detail) {
     return (
