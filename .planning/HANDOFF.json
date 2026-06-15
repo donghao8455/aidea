@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-06-15T09:00:28.515Z",
+  "phase": "05",
+  "phase_name": "Lighthouse性能优化",
+  "phase_dir": "05-Lighthouse性能优化",
+  "plan": 1,
+  "task": 2,
+  "total_tasks": 5,
+  "status": "paused",
+  "completed_tasks": [
+    {
+      "id": 1,
+      "name": "Lighthouse 基线审计",
+      "status": "done",
+      "result": "Desktop Performance=55, FCP=0.45s, LCP=2.17s, TBT=489ms, CLS=0.250; Mobile 测试失败(windows chrome session 问题)"
+    },
+    {
+      "id": 2,
+      "name": "修复图片尺寸问题 (CLS)",
+      "status": "done",
+      "result": "GraphCanvas min-height + AINewsSidebar min-height + main min-height 已实施，V2 测试 CLS 仍=0.250(未改善)"
+    },
+    {
+      "id": 3,
+      "name": "优化字体加载",
+      "status": "done",
+      "result": "Google Fonts preconnect 已添加，无 Google Fonts 引用(使用系统字体)，preconnect 无害"
+    }
+  ],
+  "remaining_tasks": [
+    {"id": 4, "name": "优化 JavaScript bundle 大小", "status": "not_started"},
+    {"id": 5, "name": "最终 Lighthouse 验证", "status": "not_started"}
+  ],
+  "blockers": [
+    {
+      "description": "CLS 修复后 dev 环境测试结果未改善(0.250)，dev 热重载可能掩盖真实 CLS，需要生产构建验证",
+      "type": "technical",
+      "workaround": "建议用 npm run build + serve build 后再跑 Lighthouse"
+    },
+    {
+      "description": "TBT=506ms(main.js=990KB)，需要 code-splitting 优化，但修改量较大",
+      "type": "technical",
+      "workaround": "检查 fuse.js 是否可以懒加载，X6 是否可以延迟初始化"
+    },
+    {
+      "description": "Mobile Lighthouse 测试无法完成(--preset=mobile 不支持，需要 --form-factor 参数)",
+      "type": "technical",
+      "workaround": "可用 --form-factor=mobile --throttling-method=simulate 替代"
+    }
+  ],
+  "human_actions_pending": [
+    {
+      "action": "生产构建后重新跑 Lighthouse 验证 CLS 改善效果",
+      "context": "dev server 热重载可能掩盖真实 CLS 问题",
+      "blocking": true
+    },
+    {
+      "action": "手动审查优化方案是否继续执行",
+      "context": "用户要求暂停优化进行审查",
+      "blocking": true
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "x6.min.js 加 defer",
+      "rationale": "X6 加载不影响首屏渲染",
+      "phase": "05"
+    },
+    {
+      "decision": "Google Fonts preconnect",
+      "rationale": "加速字体加载(虽然当前无 Google Fonts 引用)",
+      "phase": "05"
+    },
+    {
+      "decision": "og:image 从 social-card.png 改为 docusaurus-social-card.jpg",
+      "rationale": "原文件不存在，修复 404",
+      "phase": "05"
+    },
+    {
+      "decision": "min-height 方案修复 CLS",
+      "rationale": "GraphCanvas 无明确高度导致加载后页面跳动",
+      "phase": "05"
+    }
+  ],
+  "uncommitted_files": [
+    "aides/docusaurus.config.ts",
+    "aides/src/components/AINewsSidebar/index.tsx",
+    "aides/src/components/Graph/GraphCanvas.module.css",
+    "aides/src/pages/index.module.css",
+    "aides/docs/operations/lighthouse.md",
+    "aides/docs/intro.md"
+  ],
+  "next_action": "用户审查 Phase 5 优化内容后决定是否继续执行或调整方案",
+  "context_notes": "Phase 5 Lighthouse 性能优化执行中，基线已建立，7项修复已实施但效果有限。用户要求暂停审查，等待进一步指示。"
+}
