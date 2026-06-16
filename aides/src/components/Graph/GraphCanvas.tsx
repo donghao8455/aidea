@@ -3,7 +3,9 @@ import {concepts, relations} from '@site/src/data/graphData';
 import type {ConceptData, RelationData} from './types';
 import {layoutConcepts} from './layoutHierarchical';
 import {classifyRelation, RELATION_STYLES, type RelationType} from './relationClassifier';
+import {buildAdjacency, getNeighbors, getCategoryCenters} from './adjacency';
 import {GraphLegend} from './GraphLegend';
+import {FocusDetailButton} from './FocusDetailButton';
 import styles from './GraphCanvas.module.css';
 
 const categoryColors: Record<string, {bg: string; border: string}> = {
@@ -66,6 +68,12 @@ interface GraphCanvasProps {
   searchQuery?: string;
   learningPath?: string[]; // 路径概念 ID 有序数组
   highlightedConcepts?: string[]; // 新闻点击后高亮的概念 ID
+  /** 当前聚焦节点 ID（B - Progressive Disclosure） */
+  focusedNode?: string | null;
+  /** 点击"查看详情"按钮回调 */
+  onEnterDetail?: (conceptId: string) => void;
+  /** 点击"返回总览"按钮回调 */
+  onExitFocus?: () => void;
 }
 
 export const GraphCanvas: React.FC<GraphCanvasProps> = ({
@@ -74,17 +82,31 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   searchQuery,
   learningPath,
   highlightedConcepts,
+  focusedNode,
+  onEnterDetail,
+  onExitFocus,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<X6Graph>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const onNodeClickRef = useRef(onNodeClick);
+  // B - Progressive Disclosure: 持久化邻接表与分类中心，避免重建
+  const adjacencyRef = useRef<Map<string, Set<string>> | null>(null);
+  const categoryCentersRef = useRef<Set<string> | null>(null);
+  const onEnterDetailRef = useRef(onEnterDetail);
+  const onExitFocusRef = useRef(onExitFocus);
   const [loading, setLoading] = useState(true);
 
   // 保持 callback ref 最新，避免触发 useEffect 重建
   useEffect(() => {
     onNodeClickRef.current = onNodeClick;
   }, [onNodeClick]);
+  useEffect(() => {
+    onEnterDetailRef.current = onEnterDetail;
+  }, [onEnterDetail]);
+  useEffect(() => {
+    onExitFocusRef.current = onExitFocus;
+  }, [onExitFocus]);
 
   // ============================================================
   // Effect 1: 初始化 Graph 实例（只执行一次）
@@ -309,6 +331,11 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
 
       graph.centerContent();
       graphRef.current = graph;
+
+      // B - Progressive Disclosure: 构建邻接表 + 选取分类中心
+      adjacencyRef.current = buildAdjacency(relations);
+      categoryCentersRef.current = getCategoryCenters(concepts, degreeMap);
+
       setLoading(false);
     };
 
@@ -595,12 +622,72 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   }, [highlightedConcepts]);
 
   // ============================================================
+  // Effect 5: 渐进式披露 (B - Progressive Disclosure)
+  // 单一职责：只改 opacity + strokeWidth + stroke 颜色
+  // 优先级：focused > learningPath > search/category > 默认
+  //   - focusedNode=null: 5 个分类中心 opacity 1，其它 0.08
+  //   - focusedNode=X:    X + 1 跳邻居 opacity 1，其它 0.08
+  //   - fill 颜色由 Effect 2/3/4 负责，本 effect 不修改
+  // ============================================================
+  useEffect(() => {
+    const graph = graphRef.current;
+    const adj = adjacencyRef.current;
+    const centers = categoryCentersRef.current;
+    if (!graph || !adj || !centers) return;
+
+    const visibleSet: Set<string> = focusedNode
+      ? new Set([focusedNode, ...getNeighbors(focusedNode, adj)])
+      : centers;
+
+    // 节点：opacity + strokeWidth
+    for (const node of graph.getNodes()) {
+      const concept: ConceptData | undefined = node.getData()?.concept;
+      if (!concept) continue;
+      const isVisible = visibleSet.has(concept.id);
+      const isFocal = focusedNode != null && concept.id === focusedNode;
+      const colors = categoryColors[concept.category] || categoryColors.basic;
+
+      node.setAttrs({
+        body: {
+          opacity: isVisible ? 1 : 0.08,
+          strokeWidth: isFocal ? 4 : isVisible ? 2 : 1,
+          // 边框：focal / visible 用分类色，dim 用灰
+          stroke: isVisible ? colors.border : '#cbd5e1',
+        },
+      });
+    }
+
+    // 边：opacity + 按 G 类型色保留
+    for (const edge of graph.getEdges()) {
+      const sId: string | undefined = edge.getSourceCellId?.() || edge.getSource()?.cell;
+      const tId: string | undefined = edge.getTargetCellId?.() || edge.getTarget()?.cell;
+      const bothVisible = !!sId && !!tId && visibleSet.has(sId) && visibleSet.has(tId);
+      const relType: RelationType = edge.getData?.()?.relationType ?? 'applied';
+      const style = RELATION_STYLES[relType];
+
+      edge.setAttrs({
+        line: {
+          stroke: bothVisible ? style.stroke : '#e2e8f0',
+          strokeWidth: bothVisible ? 2 : 1,
+          strokeDasharray: bothVisible ? style.dasharray : '',
+          opacity: bothVisible ? 1 : 0.05,
+        },
+      });
+    }
+  }, [focusedNode]);
+
+  // ============================================================
   // 布局算法已移至 ./layoutHierarchical.ts（分层力导向，约束求解避免重叠）
   // ============================================================
 
   // ============================================================
   // 渲染：始终保留 graph 容器（ref 不能被条件渲染移除）
   // ============================================================
+  // 解析当前聚焦概念对象（用于 FocusDetailButton）
+  const focusedConcept: ConceptData | null = focusedNode
+    ? concepts.find(c => c.id === focusedNode) ?? null
+    : null;
+
   return (
     <div className={styles.container}>
       {loading && (
@@ -613,6 +700,15 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       <div className={styles.legend} aria-label="关系类型图例">
         <GraphLegend />
       </div>
+      {focusedConcept && (
+        <div className={styles.focusDetailBtn}>
+          <FocusDetailButton
+            concept={focusedConcept}
+            onEnterDetail={id => onEnterDetailRef.current?.(id)}
+            onExitFocus={() => onExitFocusRef.current?.()}
+          />
+        </div>
+      )}
     </div>
   );
 };

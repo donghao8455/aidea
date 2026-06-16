@@ -44,6 +44,8 @@ export default function Home(): ReactNode {
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [activePathId, setActivePathId] = useState<string | null>(null);
   const [highlightedConcepts, setHighlightedConcepts] = useState<string[]>([]);
+  // B - Progressive Disclosure: 当前聚焦节点 ID
+  const [focusedNode, setFocusedNode] = useState<string | null>(null);
   const [newsItems, setNewsItems] = useState<AINewsItem[]>(aiNewsData);
   const [newsLoading, setNewsLoading] = useState(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -75,10 +77,28 @@ export default function Home(): ReactNode {
     setTimeout(() => setHighlightedConcepts([]), 3000);
   }, []);
 
-  // SPA 路由跳转（无白屏刷新）
+  // B - Progressive Disclosure: 单击节点 → 进入聚焦模式（不直接跳转）
   const handleNodeClick = useCallback((conceptId: string) => {
-    history.push(`/concepts/${conceptId}`);
-  }, [history]);
+    setFocusedNode(prev => {
+      // 单击同一节点：不操作（用户需点浮动"查看详情"按钮跳转）
+      if (prev === conceptId) return prev;
+      // 单击另一节点：切换焦点
+      return conceptId;
+    });
+  }, []);
+
+  // B - 进入详情（点击浮动"查看详情"按钮）
+  const handleEnterDetail = useCallback(
+    (conceptId: string) => {
+      history.push(`/concepts/${conceptId}`);
+    },
+    [history],
+  );
+
+  // B - 退出聚焦（点击"返回总览"或按 Esc）
+  const handleExitFocus = useCallback(() => {
+    setFocusedNode(null);
+  }, []);
 
   // 搜索防抖：200ms，避免每次按键都触发图谱样式更新
   useEffect(() => {
@@ -88,12 +108,17 @@ export default function Home(): ReactNode {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Ctrl+K 快捷键聚焦搜索框
+  // Ctrl+K 快捷键聚焦搜索框 + Esc 退出聚焦
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         searchInputRef.current?.focus();
+        return;
+      }
+      if (e.key === 'Escape') {
+        // 仅在 focusedNode 存在时拦截 Esc，避免与浏览器后退冲突
+        setFocusedNode(prev => (prev ? null : prev));
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -177,6 +202,9 @@ export default function Home(): ReactNode {
             searchQuery={debouncedQuery}
             learningPath={learningPathIds}
             highlightedConcepts={highlightedConcepts}
+            focusedNode={focusedNode}
+            onEnterDetail={handleEnterDetail}
+            onExitFocus={handleExitFocus}
           />
         )}
 
