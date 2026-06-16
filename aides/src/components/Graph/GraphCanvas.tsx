@@ -1,7 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {concepts, relations} from '@site/src/data/graphData';
-import type {ConceptData} from './types';
+import type {ConceptData, RelationData} from './types';
 import {layoutConcepts} from './layoutHierarchical';
+import {classifyRelation, RELATION_STYLES, type RelationType} from './relationClassifier';
+import {GraphLegend} from './GraphLegend';
 import styles from './GraphCanvas.module.css';
 
 const categoryColors: Record<string, {bg: string; border: string}> = {
@@ -13,6 +15,46 @@ const categoryColors: Record<string, {bg: string; border: string}> = {
 };
 
 const categoryOrder = ['basic', 'tech', 'methodology', 'architecture', 'tool']; // 保留用于潜在的向后兼容
+
+// ============ 节点尺寸常量（F - Node Size by Degree） ============
+const NODE_BASE_WIDTH = 160;
+const NODE_BASE_HEIGHT = 70;
+const NODE_FONT_SIZE = 12;
+const NODE_MAX_WIDTH = 220; // 防止枢纽节点过大
+const NODE_MAX_SCALE = 1.4; // 最大放大倍数（degree=maxDegree 时）
+const NODE_MIN_FONT = 11; // 最小字号，防止文字过小不可读
+
+/**
+ * 计算所有节点的度（连接数）
+ */
+function buildDegreeMap(rels: RelationData[]): Record<string, number> {
+  const m: Record<string, number> = {};
+  for (const r of rels) {
+    m[r.source] = (m[r.source] ?? 0) + 1;
+    m[r.target] = (m[r.target] ?? 0) + 1;
+  }
+  return m;
+}
+
+/**
+ * 根据节点的度计算渲染尺寸
+ * scale = 1 + sqrt(degree)/sqrt(maxDegree) * (MAX_SCALE - 1)
+ * degree=0 → 1.0, degree=maxDegree → MAX_SCALE
+ */
+function sizeForDegree(
+  degree: number,
+  maxDegree: number,
+): {w: number; h: number; font: number} {
+  const scale =
+    1 + (Math.sqrt(Math.max(degree, 0)) / Math.sqrt(Math.max(maxDegree, 1))) * (NODE_MAX_SCALE - 1);
+  const w = Math.min(NODE_MAX_WIDTH, Math.round(NODE_BASE_WIDTH * scale));
+  const h = Math.round(NODE_BASE_HEIGHT * scale);
+  const font = Math.min(
+    NODE_FONT_SIZE + 1,
+    Math.max(NODE_MIN_FONT, Math.round(NODE_FONT_SIZE * scale)),
+  );
+  return {w, h, font};
+}
 
 // X6 Graph 实例类型（通过全局脚本加载，类型声明见 src/types/x6.d.ts）
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -110,17 +152,22 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       // 计算布局位置
       const positions = layoutConcepts(concepts);
 
+      // 计算节点度（F: Node Size by Degree）
+      const degreeMap = buildDegreeMap(relations);
+      const maxDegree = Math.max(1, ...Object.values(degreeMap));
+
       // 添加所有节点
       concepts.forEach(concept => {
         const pos = positions[concept.id];
         const colors = categoryColors[concept.category] || categoryColors.basic;
+        const {w, h, font} = sizeForDegree(degreeMap[concept.id] ?? 0, maxDegree);
 
         graph.addNode({
           id: concept.id,
           x: pos.x,
           y: pos.y,
-          width: 160,
-          height: 70,
+          width: w,
+          height: h,
           attrs: {
             body: {
               fill: colors.bg,
@@ -131,7 +178,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
             },
             label: {
               text: `${concept.name}\n(${concept.abbreviation})`,
-              fontSize: 12,
+              fontSize: font,
               fontWeight: 600,
               fill: '#213547',
               refX: 0.5,
@@ -140,15 +187,18 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
               textVerticalAnchor: 'middle',
             },
           },
-          data: {concept},
+          data: {concept, degree: degreeMap[concept.id] ?? 0},
         });
       });
 
-      // 添加所有边 - 使用贝塞尔曲线边，避免重叠，降低层级
+      // 添加所有边 - 按关系类型分类着色（G: Relation Type Coloring）
       relations.forEach(relation => {
         const sourcePos = positions[relation.source];
         const targetPos = positions[relation.target];
         if (!sourcePos || !targetPos) return;
+
+        const relType: RelationType = classifyRelation(relation.label);
+        const style = RELATION_STYLES[relType];
 
         graph.addEdge({
           id: `edge-${relation.source}-${relation.target}`,
@@ -162,7 +212,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
               attrs: {
                 labelText: {
                   text: relation.label,
-                  fill: '#64748b',
+                  fill: style.labelFill,
                   fontSize: 10,
                   fontWeight: 500,
                 },
@@ -172,14 +222,17 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           ],
           attrs: {
             line: {
-              stroke: 'rgba(148, 163, 184, 0.5)',
+              stroke: style.stroke,
               strokeWidth: 1.5,
+              strokeDasharray: style.dasharray,
               targetMarker: {
                 name: 'classic',
                 size: 5,
               },
             },
           },
+          // 持久化关系类型，Effect 2/3 通过 getData 读取避免重复分类
+          data: {relationType: relType, rawLabel: relation.label},
           // 使用默认的贝塞尔曲线
           zIndex: -1, // 让边在节点之下
         });
@@ -361,7 +414,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       });
     });
 
-    // 更新所有边样式
+    // 更新所有边样式（G: 按关系类型保留颜色，淡化时用类型 dim 色）
     const edges = graph.getEdges();
     edges.forEach((edge: X6Graph) => {
       const sourceId = edge.getSourceCellId?.() || edge.getSource()?.cell;
@@ -371,10 +424,15 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       const targetActive = targetId ? nodeMatchMap[targetId] !== false : true;
       const isActive = sourceActive && targetActive;
 
+      // 读取持久化的关系类型（init 时已分类）
+      const relType: RelationType = edge.getData?.()?.relationType ?? 'applied';
+      const style = RELATION_STYLES[relType];
+
       edge.setAttrs({
         line: {
-          stroke: isActive ? '#94a3b8' : '#e2e8f0',
+          stroke: isActive ? style.stroke : style.labelFillDim,
           strokeWidth: isActive ? 2 : 1,
+          strokeDasharray: isActive ? style.dasharray : '',
         },
       });
 
@@ -385,7 +443,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           attrs: {
             labelText: {
               text: labels[0]?.attrs?.labelText?.text || '',
-              fill: isActive ? '#64748b' : '#cbd5e1',
+              fill: isActive ? style.labelFill : style.labelFillDim,
               fontSize: 11,
             },
           },
@@ -443,7 +501,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       }
     });
 
-    // 路径节点之间的边改为虚线
+    // 路径节点之间的边保留类型色，仅加粗强调
     const edges = graph.getEdges();
     edges.forEach((edge: X6Graph) => {
       const sourceId = edge.getSourceCellId?.() || edge.getSource()?.cell;
@@ -451,17 +509,23 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
 
       const sourceIdx = learningPath.indexOf(sourceId);
       const targetIdx = learningPath.indexOf(targetId);
+      const isOnPathEdge = sourceIdx !== -1 && targetIdx !== -1 && Math.abs(sourceIdx - targetIdx) === 1;
 
-      // 仅当两个端点都是路径节点且相邻时，改为虚线高亮
-      if (sourceIdx !== -1 && targetIdx !== -1 && Math.abs(sourceIdx - targetIdx) === 1) {
+      // 读取持久化的关系类型
+      const relType: RelationType = edge.getData?.()?.relationType ?? 'applied';
+      const style = RELATION_STYLES[relType];
+
+      if (isOnPathEdge) {
+        // 路径边：保留类型色，加粗强调
         edge.setAttrs({
           line: {
-            stroke: '#5B5FC7',
-            strokeWidth: 2.5,
-            strokeDasharray: '5,3',
+            stroke: style.stroke,
+            strokeWidth: 3,
+            strokeDasharray: style.dasharray,
           },
         });
       } else {
+        // 非路径边：淡化为灰色实线
         edge.setAttrs({
           line: {
             stroke: '#e2e8f0',
@@ -546,6 +610,9 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
         </div>
       )}
       <div ref={containerRef} className={styles.graph} />
+      <div className={styles.legend} aria-label="关系类型图例">
+        <GraphLegend />
+      </div>
     </div>
   );
 };

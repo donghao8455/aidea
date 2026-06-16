@@ -9,7 +9,7 @@ import type {ConceptData} from './types';
 
 const CANVAS_WIDTH = 1400;
 const MIN_NODE_PADDING = 40; // 画布左右各留 40px 边距
-const MIN_SPACING = 220; // 节点宽度 160 + 视觉间隔 60
+const MIN_SPACING = 240; // 节点最大宽度 220（按度放大后）+ 视觉间隔 20
 const MAX_ITERATIONS = 30;
 const RELAXATION = 0.5;
 const NODE_WIDTH = 160;

@@ -1,5 +1,6 @@
 .container {
   width: 100%;
+  min-height: 700px;
   height: 700px;
   display: flex;
   justify-content: center;
@@ -48,4 +49,24 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* 关系类型图例：右上角悬浮，半透明白底 */
+.legend {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  z-index: 5;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 200px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
