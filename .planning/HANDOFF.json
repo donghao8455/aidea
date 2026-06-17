@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-15T09:00:28.515Z",
+  "timestamp": "2026-06-17T12:34:05Z",
   "phase": "05",
   "phase_name": "Lighthouse性能优化",
   "phase_dir": "05-Lighthouse性能优化",
@@ -26,6 +26,12 @@
       "name": "优化字体加载",
       "status": "done",
       "result": "Google Fonts preconnect 已添加，无 Google Fonts 引用(使用系统字体)，preconnect 无害"
+    },
+    {
+      "id": 6,
+      "name": "代码审查 (2026-06-17)",
+      "status": "done",
+      "result": "审查 GraphCanvas/AINewsSidebar/concept-page/index 等，发现 CR-01(XSS理论风险)/CR-02(X6 any类型-非bug)均为低风险；WR-01/WR-02/WR-03 均为误报；WR-04(conceptOrder手动维护)为低风险"
     }
   ],
   "remaining_tasks": [
@@ -56,8 +62,8 @@
       "blocking": true
     },
     {
-      "action": "手动审查优化方案是否继续执行",
-      "context": "用户要求暂停优化进行审查",
+      "action": "决定是否继续 Phase 5 优化或切换其他方向",
+      "context": "用户审查了代码质量，确认无紧急 bug；需要决定下一步",
       "blocking": true
     }
   ],
@@ -69,7 +75,7 @@
     },
     {
       "decision": "Google Fonts preconnect",
-      "rationale": "加速字体加载(虽然当前无 Google Fonts 引用)",
+      "rationale": "加速字体加载(虽然当前无 Google Fonts 引用，使用系统字体)",
       "phase": "05"
     },
     {
@@ -81,16 +87,19 @@
       "decision": "min-height 方案修复 CLS",
       "rationale": "GraphCanvas 无明确高度导致加载后页面跳动",
       "phase": "05"
+    },
+    {
+      "decision": "CR-01(内联HTML XSS风险)评估为低优先级",
+      "rationale": "数据来自静态源码，非用户输入；攻击者需篡改源码才能利用",
+      "phase": "05"
+    },
+    {
+      "decision": "CR-02(X6Graph=any)评估为技术债非bug",
+      "rationale": "代码使用fallback模式(getSourceCellId?.()||edge.getSource()?.cell)，X6 v3下行为正确",
+      "phase": "05"
     }
   ],
-  "uncommitted_files": [
-    "aides/docusaurus.config.ts",
-    "aides/src/components/AINewsSidebar/index.tsx",
-    "aides/src/components/Graph/GraphCanvas.module.css",
-    "aides/src/pages/index.module.css",
-    "aides/docs/operations/lighthouse.md",
-    "aides/docs/intro.md"
-  ],
-  "next_action": "用户审查 Phase 5 优化内容后决定是否继续执行或调整方案",
-  "context_notes": "Phase 5 Lighthouse 性能优化执行中，基线已建立，7项修复已实施但效果有限。用户要求暂停审查，等待进一步指示。"
+  "uncommitted_files": [],
+  "next_action": "用户决定：1) 继续 Phase 5(Lighthouse验证需生产构建) 2) 切换其他阶段 3) 暂停优化",
+  "context_notes": "本次会话完成代码审查，确认无紧急 bug。Phase 5 Lighthouse 优化已暂停等待决策。代码质量审查结论：无严重风险，实际 bug 为 0，理论风险 2(低优先级)，误报 3，技术债若干。需用户决定下一步方向。"
 }
