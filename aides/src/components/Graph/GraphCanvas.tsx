@@ -26,6 +26,9 @@ const NODE_MAX_WIDTH = 220; // 防止枢纽节点过大
 const NODE_MAX_SCALE = 1.4; // 最大放大倍数（degree=maxDegree 时）
 const NODE_MIN_FONT = 11; // 最小字号，防止文字过小不可读
 
+// B - Progressive Disclosure: 非可见节点的弱化程度（body + label 同步）
+const DIM_OPACITY = 0.06;
+
 /**
  * 计算所有节点的度（连接数）
  */
@@ -432,11 +435,13 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           fill: isActive ? colors.bg : '#f1f5f9',
           stroke: isActive ? colors.border : '#cbd5e1',
           strokeWidth: isActive ? 2 : 1,
-          opacity: isActive ? 1 : 0.4,
+          opacity: isActive ? 1 : DIM_OPACITY,
         },
         label: {
           fontWeight: isActive ? 600 : 400,
           fill: isActive ? '#213547' : '#94a3b8',
+          // 高亮节点文字显现，非匹配弱化（与首屏默认视图一致）
+          opacity: isActive ? 1 : DIM_OPACITY,
         },
       });
     });
@@ -517,13 +522,14 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
             fontSize: 11,
             fontWeight: 700,
             fill: '#fff',
+            opacity: 1,
           },
         });
       } else {
-        // 非路径节点：透明度 0.3
+        // 非路径节点：弱化（body + label 同步）
         node.setAttrs({
-          body: {opacity: 0.3},
-          label: {fill: '#94a3b8'},
+          body: {opacity: DIM_OPACITY},
+          label: {fill: '#94a3b8', opacity: DIM_OPACITY},
         });
       }
     });
@@ -591,6 +597,9 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
               strokeWidth: isPulseOn ? 4 : 2,
               opacity: 1,
             },
+            label: {
+              opacity: 1,
+            },
           });
         }
       });
@@ -613,6 +622,9 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
                 strokeWidth: 2,
                 opacity: 1,
               },
+              label: {
+                opacity: 1,
+              },
             });
           }
         });
@@ -623,11 +635,12 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
 
   // ============================================================
   // Effect 5: 渐进式披露 (B - Progressive Disclosure)
-  // 单一职责：只改 opacity + strokeWidth + stroke 颜色
+  // 单一职责：只改 opacity + strokeWidth + stroke 颜色（含 label opacity）
   // 优先级：focused > learningPath > search/category > 默认
-  //   - focusedNode=null: 5 个分类中心 opacity 1，其它 0.08
-  //   - focusedNode=X:    X + 1 跳邻居 opacity 1，其它 0.08
-  //   - fill 颜色由 Effect 2/3/4 负责，本 effect 不修改
+  //   - focusedNode=null: 5 个分类中心 opacity 1，其它 DIM_OPACITY
+  //   - focusedNode=X:    X + 1 跳邻居 opacity 1，其它 DIM_OPACITY
+  //   - label.opacity 同步弱化，避免文字残留干扰（切换焦点时一并还原）
+  //   - fill 颜色由 Effect 2/3/4 负责，本 effect 不修改（避免与它们冲突）
   // ============================================================
   useEffect(() => {
     const graph = graphRef.current;
@@ -639,7 +652,8 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       ? new Set([focusedNode, ...getNeighbors(focusedNode, adj)])
       : centers;
 
-    // 节点：opacity + strokeWidth
+    // 节点：body opacity + label opacity + strokeWidth
+    // 切换焦点时遍历全部节点重设 → 旧焦点的 label/边框自动还原
     for (const node of graph.getNodes()) {
       const concept: ConceptData | undefined = node.getData()?.concept;
       if (!concept) continue;
@@ -649,10 +663,14 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
 
       node.setAttrs({
         body: {
-          opacity: isVisible ? 1 : 0.08,
+          opacity: isVisible ? 1 : DIM_OPACITY,
           strokeWidth: isFocal ? 4 : isVisible ? 2 : 1,
           // 边框：focal / visible 用分类色，dim 用灰
           stroke: isVisible ? colors.border : '#cbd5e1',
+        },
+        label: {
+          // label 是独立 SVG text，必须单独弱化，否则框淡了名字还亮
+          opacity: isVisible ? 1 : DIM_OPACITY,
         },
       });
     }
@@ -670,7 +688,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           stroke: bothVisible ? style.stroke : '#e2e8f0',
           strokeWidth: bothVisible ? 2 : 1,
           strokeDasharray: bothVisible ? style.dasharray : '',
-          opacity: bothVisible ? 1 : 0.05,
+          opacity: bothVisible ? 1 : DIM_OPACITY,
         },
       });
     }
