@@ -435,13 +435,10 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           fill: isActive ? colors.bg : '#f1f5f9',
           stroke: isActive ? colors.border : '#cbd5e1',
           strokeWidth: isActive ? 2 : 1,
-          opacity: isActive ? 1 : DIM_OPACITY,
         },
         label: {
           fontWeight: isActive ? 600 : 400,
           fill: isActive ? '#213547' : '#94a3b8',
-          // 高亮节点文字显现，非匹配弱化（与首屏默认视图一致）
-          opacity: isActive ? 1 : DIM_OPACITY,
         },
       });
     });
@@ -515,21 +512,19 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
             fill: colors.border,
             stroke: colors.border,
             strokeWidth: 3,
-            opacity: 1,
           },
           label: {
             text: `${pathIndex + 1}. ${concept.name}\n(${concept.abbreviation})`,
             fontSize: 11,
             fontWeight: 700,
             fill: '#fff',
-            opacity: 1,
           },
         });
       } else {
-        // 非路径节点：弱化（body + label 同步）
+        // 非路径节点：仅设置填充色为灰色，opacity 由 Effect 5（聚焦模式）管理
         node.setAttrs({
-          body: {opacity: DIM_OPACITY},
-          label: {fill: '#94a3b8', opacity: DIM_OPACITY},
+          body: {fill: '#e2e8f0', stroke: '#cbd5e1', strokeWidth: 1},
+          label: {fill: '#94a3b8'},
         });
       }
     });

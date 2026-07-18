@@ -4,7 +4,7 @@ import {useHistory} from '@docusaurus/router';
 import Layout from '@theme/Layout';
 import {GraphCanvas} from '@site/src/components/Graph';
 import {LearningPathSelector} from '@site/src/components/LearningPathSelector';
-import {SearchSuggest} from '@site/src/components/SearchSuggest';
+import {SearchSuggest, type SearchSuggestHandle} from '@site/src/components/SearchSuggest';
 import {MobileConceptList} from '@site/src/components/MobileConceptList';
 import {AINewsSidebar, type AINewsItem} from '@site/src/components/AINewsSidebar';
 import {aiNewsData} from '@site/src/data/aiNews';
@@ -49,6 +49,7 @@ export default function Home(): ReactNode {
   const [newsItems, setNewsItems] = useState<AINewsItem[]>(aiNewsData);
   const [newsLoading, setNewsLoading] = useState(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchSuggestRef = useRef<SearchSuggestHandle>(null);
   const history = useHistory();
 
   const activePath = activePathId ? getLearningPath(activePathId) : null;
@@ -78,11 +79,23 @@ export default function Home(): ReactNode {
   }, []);
 
   // B - Progressive Disclosure: 单击节点 → 进入聚焦模式（不直接跳转）
+  // 双击同一节点 → 退出聚焦模式
+  const lastClickRef = useRef<{id: string; time: number} | null>(null);
   const handleNodeClick = useCallback((conceptId: string) => {
+    const now = Date.now();
+    const last = lastClickRef.current;
+    const DOUBLE_CLICK_THRESHOLD = 400;
+
+    if (last && last.id === conceptId && now - last.time < DOUBLE_CLICK_THRESHOLD) {
+      // 双击同一节点：退出聚焦
+      lastClickRef.current = null;
+      setFocusedNode(null);
+      return;
+    }
+    lastClickRef.current = {id: conceptId, time: now};
+
     setFocusedNode(prev => {
-      // 单击同一节点：不操作（用户需点浮动"查看详情"按钮跳转）
       if (prev === conceptId) return prev;
-      // 单击另一节点：切换焦点
       return conceptId;
     });
   }, []);
@@ -98,6 +111,11 @@ export default function Home(): ReactNode {
   // B - 退出聚焦（点击"返回总览"或按 Esc）
   const handleExitFocus = useCallback(() => {
     setFocusedNode(null);
+  }, []);
+
+  // 搜索键盘导航（ArrowUp/Down/Enter）
+  const handleSearchKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    searchSuggestRef.current?.handleInputKeyDown(e);
   }, []);
 
   // 搜索防抖：200ms，避免每次按键都触发图谱样式更新
@@ -117,8 +135,8 @@ export default function Home(): ReactNode {
         return;
       }
       if (e.key === 'Escape') {
-        // 仅在 focusedNode 存在时拦截 Esc，避免与浏览器后退冲突
-        setFocusedNode(prev => (prev ? null : prev));
+        // 仅在 focusedNode 存在时退出聚焦模式
+        setFocusedNode(null);
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -144,6 +162,7 @@ export default function Home(): ReactNode {
                 placeholder="搜索概念... (Ctrl+K)"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
                 className={styles.searchInput}
                 role="combobox"
                 aria-expanded={searchQuery.length >= 2}
@@ -157,8 +176,12 @@ export default function Home(): ReactNode {
                   ✕
                 </button>
               )}
+              <SearchSuggest
+                query={searchQuery}
+                ref={searchSuggestRef}
+                onSelect={() => setSearchQuery('')}
+              />
             </div>
-            <SearchSuggest query={searchQuery} />
 
             <div className={styles.categoryFilters}>
               <button

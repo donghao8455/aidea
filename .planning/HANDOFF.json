@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-17T12:34:05Z",
+  "timestamp": "2026-07-18T07:08:50Z",
   "phase": "05",
   "phase_name": "Lighthouse性能优化",
   "phase_dir": "05-Lighthouse性能优化",
@@ -31,7 +31,13 @@
       "id": 6,
       "name": "代码审查 (2026-06-17)",
       "status": "done",
-      "result": "审查 GraphCanvas/AINewsSidebar/concept-page/index 等，发现 CR-01(XSS理论风险)/CR-02(X6 any类型-非bug)均为低风险；WR-01/WR-02/WR-03 均为误报；WR-04(conceptOrder手动维护)为低风险"
+      "result": "审查 GraphCanvas/AINewsSidebar/concept-page/index 等，发现 CR-01(XSS理论风险)/CR-02(X6 any类型-非bug)均为低风险"
+    },
+    {
+      "id": 7,
+      "name": "首页交互逻辑修复 (2026-07-18)",
+      "status": "done",
+      "result": "修复 8 个交互 bug：Escape键/搜索键盘导航/搜索清空/focus vs 搜索冲突/focus vs 路径冲突/双击退出聚焦/搜索浮层定位/搜索框内嵌"
     }
   ],
   "remaining_tasks": [
@@ -63,43 +69,27 @@
     },
     {
       "action": "决定是否继续 Phase 5 优化或切换其他方向",
-      "context": "用户审查了代码质量，确认无紧急 bug；需要决定下一步",
+      "context": "代码质量审查完成，确认无紧急 bug；需要决定下一步",
       "blocking": true
     }
   ],
   "decisions": [
-    {
-      "decision": "x6.min.js 加 defer",
-      "rationale": "X6 加载不影响首屏渲染",
-      "phase": "05"
-    },
-    {
-      "decision": "Google Fonts preconnect",
-      "rationale": "加速字体加载(虽然当前无 Google Fonts 引用，使用系统字体)",
-      "phase": "05"
-    },
-    {
-      "decision": "og:image 从 social-card.png 改为 docusaurus-social-card.jpg",
-      "rationale": "原文件不存在，修复 404",
-      "phase": "05"
-    },
-    {
-      "decision": "min-height 方案修复 CLS",
-      "rationale": "GraphCanvas 无明确高度导致加载后页面跳动",
-      "phase": "05"
-    },
-    {
-      "decision": "CR-01(内联HTML XSS风险)评估为低优先级",
-      "rationale": "数据来自静态源码，非用户输入；攻击者需篡改源码才能利用",
-      "phase": "05"
-    },
-    {
-      "decision": "CR-02(X6Graph=any)评估为技术债非bug",
-      "rationale": "代码使用fallback模式(getSourceCellId?.()||edge.getSource()?.cell)，X6 v3下行为正确",
-      "phase": "05"
-    }
+    {"decision": "x6.min.js 加 defer", "rationale": "X6 加载不影响首屏渲染", "phase": "05"},
+    {"decision": "Google Fonts preconnect", "rationale": "加速字体加载(虽然当前无 Google Fonts 引用，使用系统字体)", "phase": "05"},
+    {"decision": "og:image 从 social-card.png 改为 docusaurus-social-card.jpg", "rationale": "原文件不存在，修复 404", "phase": "05"},
+    {"decision": "min-height 方案修复 CLS", "rationale": "GraphCanvas 无明确高度导致加载后页面跳动", "phase": "05"},
+    {"decision": "CR-01(内联HTML XSS风险)评估为低优先级", "rationale": "数据来自静态源码，非用户输入", "phase": "05"},
+    {"decision": "CR-02(X6Graph=any)评估为技术债非bug", "rationale": "代码使用fallback模式(getSourceCellId?.()||edge.getSource()?.cell)，X6 v3下行为正确", "phase": "05"},
+    {"decision": "Effect 2/3 只管 fill/stroke，不碰 opacity", "rationale": "避免与 Effect 5(聚焦模式)视觉冲突", "phase": "05"},
+    {"decision": "搜索下拉改为 position:absolute 浮层", "rationale": "避免挤压下方学习路径和图谱", "phase": "05"},
+    {"decision": "SearchSuggest 内嵌到 .searchBox 内部", "rationale": "共享 position:relative，确保浮层与搜索框左对齐", "phase": "05"}
   ],
-  "uncommitted_files": [],
-  "next_action": "用户决定：1) 继续 Phase 5(Lighthouse验证需生产构建) 2) 切换其他阶段 3) 暂停优化",
-  "context_notes": "本次会话完成代码审查，确认无紧急 bug。Phase 5 Lighthouse 优化已暂停等待决策。代码质量审查结论：无严重风险，实际 bug 为 0，理论风险 2(低优先级)，误报 3，技术债若干。需用户决定下一步方向。"
+  "uncommitted_files": [
+    "aides/src/components/Graph/GraphCanvas.tsx",
+    "aides/src/components/SearchSuggest/index.tsx",
+    "aides/src/components/SearchSuggest/styles.module.css",
+    "aides/src/pages/index.tsx"
+  ],
+  "next_action": "决定：1) 继续 Phase 5(Lighthouse 生产构建验证) 2) 切换其他阶段 3) 暂停优化",
+  "context_notes": "本次会话从 Phase 5 暂停点恢复，转向首页交互逻辑审查与修复。发现并修复了 8 个交互 bug（Escape键/搜索键盘导航/搜索清空/focus vs 搜索冲突/focus vs 路径冲突/双击退出聚焦/搜索浮层定位/搜索框内嵌）。所有修改已验证无编译错误，dev server 在 3001 端口运行。需用户决策 Phase 5 下一步方向。"
 }
